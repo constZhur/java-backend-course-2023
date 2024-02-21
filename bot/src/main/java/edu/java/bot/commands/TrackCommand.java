@@ -5,29 +5,31 @@ import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.models.User;
 import edu.java.bot.parsers.LinkParser;
 import edu.java.bot.repositories.UserRepository;
+import java.net.URI;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import java.net.URI;
-import java.util.List;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class TrackCommand implements Command, LinkSupport{
+public class TrackCommand implements Command, LinkSupport {
     private final UserRepository userRepository;
     private final List<? extends LinkParser> links;
 
-    private final String COMMAND = "/track";
-    private final String DESCRIPTION = "Начать отслеживать ссылку";
+    private static final String COMMAND = "/track";
+    private static final String DESCRIPTION = "Начать отслеживать ссылку";
 
-    private final String REQUEST_LINK_MESSAGE = "Введите ссылку для отслеживания:";
-    private final String USER_NOT_FOUND_MESSAGE = "Пользователь не найден.\n"
+    private static final String REQUEST_LINK_MESSAGE = "Введите ссылку для отслеживания:";
+    private static final String USER_NOT_FOUND_MESSAGE = "Пользователь не найден.\n"
         + "Перезапустите бота с помощью /start";
-    private final String WRONG_LINK_FORMAT_MESSAGE = "Неверный формат ссылки";
-    private final String LINK_ADDED_SUCCESSFULLY_MESSAGE = "Ссылка добавлена!";
-    private final String LINK_ALREADY_TRACKED_MESSAGE = "Данный ресурс уже отслеживается";
-    private final String UNSUPPORTED_RESOURCE_MESSAGE = "Данный ресурс не поддерживается!";
+    private static final String WRONG_LINK_FORMAT_MESSAGE = "Неверный формат ссылки";
+    private static final String LINK_ADDED_SUCCESSFULLY_MESSAGE = "Ссылка добавлена!";
+    private static final String LINK_ALREADY_TRACKED_MESSAGE = "Данный ресурс уже отслеживается";
+    private static final String UNSUPPORTED_RESOURCE_MESSAGE = "Данный ресурс не поддерживается!";
+
+    public static final String TRACK_COMMAND_PROCESSING_LOG = "Обработка команды /track для чата: {}. Результат: {}";
 
 
     @Override
@@ -61,15 +63,18 @@ public class TrackCommand implements Command, LinkSupport{
         }
 
         URI uri = URI.create(link);
+        SendMessage msg;
         if (isSupportedLink(uri, links)) {
             boolean isLinkNew = user.getLinks().add(link);
-            log.info("Обработка команды /track для чата: {}. Результат: {}", chatId, isLinkNew ?
-                LINK_ADDED_SUCCESSFULLY_MESSAGE : LINK_ALREADY_TRACKED_MESSAGE);
-            return new SendMessage(chatId, isLinkNew ?
-                LINK_ADDED_SUCCESSFULLY_MESSAGE : LINK_ALREADY_TRACKED_MESSAGE);
+            log.info(TRACK_COMMAND_PROCESSING_LOG, chatId, isLinkNew
+                ? LINK_ADDED_SUCCESSFULLY_MESSAGE : LINK_ALREADY_TRACKED_MESSAGE);
+            msg = new SendMessage(chatId, isLinkNew
+                ? LINK_ADDED_SUCCESSFULLY_MESSAGE : LINK_ALREADY_TRACKED_MESSAGE);
         } else {
-            log.info("Обработка команды /track для чата: {}. Результат: {}", chatId, UNSUPPORTED_RESOURCE_MESSAGE);
-            return new SendMessage(chatId, UNSUPPORTED_RESOURCE_MESSAGE);
+            log.info(TRACK_COMMAND_PROCESSING_LOG, chatId, UNSUPPORTED_RESOURCE_MESSAGE);
+            msg = new SendMessage(chatId, UNSUPPORTED_RESOURCE_MESSAGE);
         }
+
+        return msg;
     }
 }

@@ -9,11 +9,11 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class HelpCommand implements Command{
-    private final String COMMAND = "/help";
-    private final String DESCRIPTION = "Показать рекомендации по использованию бота";
+public class HelpCommand implements Command {
+    private static final String COMMAND = "/help";
+    private static final String DESCRIPTION = "Показать рекомендации по использованию бота";
 
-    private final String BOT_USAGE_INFORMATION =
+    private static final String BOT_USAGE_INFORMATION =
         "Этот бот позволяет получать уведомления от различных ресурсов в интернете.\n"
         + "В данный момент бот поддерживает оповещения об обновлениях на ресурсах: GitHub, StackOverflow.\n\n"
         + "Вам предоставляется следующий набор команд для управления:\n\n"

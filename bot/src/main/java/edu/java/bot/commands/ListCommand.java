@@ -11,17 +11,17 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ListCommand implements Command{
+public class ListCommand implements Command {
     private final UserRepository userRepository;
 
-    private final String COMMAND = "/list";
-    private final String DESCRIPTION = "Показать список всех отслеживаемых ссылок";
+    private static final String COMMAND = "/list";
+    private static final String DESCRIPTION = "Показать список всех отслеживаемых ссылок";
 
-    private final String USER_NOT_FOUND = "Пользователь не был найден.\n"
+    private static final String USER_NOT_FOUND = "Пользователь не был найден.\n"
         + "Запустите бота заново, использя команду /start";
-    private final String EMPTY_LIST_MESSAGE = "В данный момент вы не отслеживание никакие ресурсы.\n"
+    private static final String EMPTY_LIST_MESSAGE = "В данный момент вы не отслеживание никакие ресурсы.\n"
         + "Начать отслеживание ссылки можно при помощи команды /track";
-    private final String TRACKED_LINKS_HEADER = "Список отслеживаемых ссылок:\n";
+    private static final String TRACKED_LINKS_HEADER = "Список отслеживаемых ссылок:\n";
 
 
     @Override

@@ -14,14 +14,14 @@ import org.springframework.stereotype.Component;
 public class UntrackCommand implements Command, LinkSupport {
     private final UserRepository userRepository;
 
-    private final String COMMAND = "/untrack";
-    private final String DESCRIPTION = "Прекратить отслеживание ссылки";
+    private static final String COMMAND = "/untrack";
+    private static final String DESCRIPTION = "Прекратить отслеживание ссылки";
 
-    private final String REQUEST_LINK_MESSAGE = "Введите ссылку, за которой необходимо перестать следить:";
-    private final String USER_NOT_FOUND_MESSAGE = "Пользователь не найден.\n"
+    private static final String REQUEST_LINK_MESSAGE = "Введите ссылку, за которой необходимо перестать следить:";
+    private static final String USER_NOT_FOUND_MESSAGE = "Пользователь не найден.\n"
         + "Перезапустите бота с помощью /start";
-    private final String LINK_REMOVED_SUCCESSFULLY_MESSAGE = "Отслеживание ссылки прекращено!";
-    private final String NO_SUCH_TRACKED_LINK_MESSAGE = "Данного ресурса нет среди отслеживаемых";
+    private static final String LINK_REMOVED_SUCCESSFULLY_MESSAGE = "Отслеживание ссылки прекращено!";
+    private static final String NO_SUCH_TRACKED_LINK_MESSAGE = "Данного ресурса нет среди отслеживаемых";
 
     @Override
     public String command() {

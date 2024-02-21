@@ -1,7 +1,7 @@
 package edu.java.bot.parsers;
 
-import org.springframework.stereotype.Service;
 import java.net.URI;
+import org.springframework.stereotype.Service;
 
 @Service
 public class StackOverflowLinkParser implements LinkParser {

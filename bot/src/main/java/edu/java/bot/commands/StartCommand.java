@@ -4,22 +4,22 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.models.User;
 import edu.java.bot.repositories.UserRepository;
+import java.util.HashSet;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import java.util.HashSet;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class StartCommand implements Command{
+public class StartCommand implements Command {
     private final UserRepository userRepository;
 
-    private final String COMMAND = "/start";
-    private final String DESCRIPTION = "Зарегистироваться в боте";
+    private static final String COMMAND = "/start";
+    private static final String DESCRIPTION = "Зарегистироваться в боте";
 
-    private final String WELCOME_MESSAGE = "Добро пожаловать!\nЧтобы увидеть список команд, используйте /help";
-    private final String BOT_ALREADY_RUNNING_MESSAGE = "Бот уже запущен и готов к использованию";
+    private static final String WELCOME_MESSAGE = "Добро пожаловать!\nЧтобы увидеть список команд, используйте /help";
+    private static final String BOT_ALREADY_RUNNING_MESSAGE = "Бот уже запущен и готов к использованию";
 
     @Override
     public String command() {

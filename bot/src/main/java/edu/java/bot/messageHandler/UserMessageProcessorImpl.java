@@ -5,9 +5,9 @@ import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.commands.Command;
 import edu.java.bot.commands.TrackCommand;
 import edu.java.bot.commands.UntrackCommand;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import java.util.List;
 
 @RequiredArgsConstructor
 @Component
@@ -15,11 +15,13 @@ public class UserMessageProcessorImpl implements UserMessageProcessor {
     private Command currentCommand;
     private final List<? extends Command> commands;
 
+    public static final String HELP_COMMAND_MESSAGE =
+        "Ознакомиться с правилами использования бота при помощи /help";
     private static final String ONLY_TEXT_COMMANDS_SUPPORTED_MESSAGE =
         "Бот поддерживает обработку только текстовых сообщений\n"
-        + "Ознакомиться с правилами использования бота при помощи /help";
+        + HELP_COMMAND_MESSAGE;
     private static final String UNSUPPORTED_COMMAND_MESSAGE = "Такая команда не поддерживается ботом\n"
-        + "Ознакомиться с правилами использования бота при помощи /help";
+        + HELP_COMMAND_MESSAGE;
 
 
     @Override
@@ -33,11 +35,9 @@ public class UserMessageProcessorImpl implements UserMessageProcessor {
 
         if (isNotText(update)) {
             message = new SendMessage(update.message().chat().id(), ONLY_TEXT_COMMANDS_SUPPORTED_MESSAGE);
-        }
-        else if (isCommand(update)) {
+        } else if (isCommand(update)) {
             message = handleCommand(update);
-        }
-        else if (isInputRequired()) {
+        } else if (isInputRequired()) {
             message = handleInput(update);
         }
 
