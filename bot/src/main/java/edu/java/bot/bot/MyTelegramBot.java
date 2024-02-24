@@ -12,6 +12,7 @@ import edu.java.bot.commands.Command;
 import edu.java.bot.configuration.ApplicationConfig;
 import edu.java.bot.messageHandler.UserMessageProcessor;
 import java.util.List;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -49,6 +50,7 @@ public class MyTelegramBot implements Bot {
     }
 
     @Override
+    @PostConstruct
     public void start() {
         bot = new TelegramBot(config.telegramToken());
 
