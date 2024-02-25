@@ -1,0 +1,36 @@
+{
+    "items": [
+        {
+            "tags": [
+                "java",
+                "mocking",
+                "wiremock"
+            ],
+            "owner": {
+                "account_id": 6181892,
+                "reputation": 715,
+                "user_id": 4817108,
+                "user_type": "registered",
+                "accept_rate": 41,
+                "profile_image": "https://www.gravatar.com/avatar/7da1d02cf322c3ed3f052f0d150da2d6?s=256&d=identicon&r=PG&f=y&so-version=2",
+                "display_name": "worrynerd",
+                "link": "https://stackoverflow.com/users/4817108/worrynerd"
+            },
+            "post_state": "Published",
+            "is_answered": true,
+            "view_count": 2414,
+            "accepted_answer_id": 46158917,
+            "answer_count": 1,
+            "score": 0,
+            "last_activity_date": 1505142513,
+            "creation_date": 1504910783,
+            "question_id": 46125417,
+            "content_license": "CC BY-SA 3.0",
+            "link": "https://stackoverflow.com/questions/46125417/how-to-mock-a-service-using-wiremock",
+            "title": "How to mock a service using wiremock"
+        }
+    ],
+    "has_more": false,
+    "quota_max": 300,
+    "quota_remaining": 295
+}
