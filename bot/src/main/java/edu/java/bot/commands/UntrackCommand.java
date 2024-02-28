@@ -11,13 +11,14 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class UntrackCommand implements Command, LinkSupport {
+public class UntrackCommand implements Command {
     private final UserRepository userRepository;
 
     private static final String COMMAND = "/untrack";
     private static final String DESCRIPTION = "Прекратить отслеживание ссылки";
 
-    private static final String REQUEST_LINK_MESSAGE = "Введите ссылку, за которой необходимо перестать следить:";
+    private static final String INSUFFICIENT_PARAMETERS_MESSAGE =
+        "Недостаточно параметров. Введите все необходимые данные!";
     private static final String USER_NOT_FOUND_MESSAGE = "Пользователь не найден.\n"
         + "Перезапустите бота с помощью /start";
     private static final String LINK_REMOVED_SUCCESSFULLY_MESSAGE = "Отслеживание ссылки прекращено!";
@@ -35,23 +36,28 @@ public class UntrackCommand implements Command, LinkSupport {
 
     @Override
     public SendMessage handle(Update update) {
-        if (isInvalidInput(update)) {
-            log.info("Неверный ввод при обработке команды /untrack для чата: {}", update.message().chat().id());
-            return new SendMessage(update.message().chat().id(), REQUEST_LINK_MESSAGE);
+        long chatId = update.message().chat().id();
+        String[] commandParts = update.message().text().split(" +", 2);
+
+        if (commandParts.length < 2) {
+            log.info("Недостаточно параметров при обработке команды /untrack для чата: {}", chatId);
+            return new SendMessage(chatId, INSUFFICIENT_PARAMETERS_MESSAGE);
         }
 
-        long chatId = update.message().chat().id();
-        String link = update.message().text();
-
+        String link = commandParts[1];
         User user = userRepository.getById(chatId);
+
         if (user == null) {
             log.info("Пользователь с id чата {} не был найден", chatId);
             return new SendMessage(chatId, USER_NOT_FOUND_MESSAGE);
         }
 
         boolean isLinkTraced = user.getLinks().remove(link);
-        log.info("Обработка команды /track для чата: {}. Результат: {}", chatId,
-            isLinkTraced ? LINK_REMOVED_SUCCESSFULLY_MESSAGE : NO_SUCH_TRACKED_LINK_MESSAGE);
-        return new SendMessage(chatId, isLinkTraced ? LINK_REMOVED_SUCCESSFULLY_MESSAGE : NO_SUCH_TRACKED_LINK_MESSAGE);
+        log.info("Обработка команды /untrack для чата: {}. Результат: {}", chatId,
+            isLinkTraced ? LINK_REMOVED_SUCCESSFULLY_MESSAGE
+                : NO_SUCH_TRACKED_LINK_MESSAGE);
+        return new SendMessage(chatId, isLinkTraced ? LINK_REMOVED_SUCCESSFULLY_MESSAGE
+            : NO_SUCH_TRACKED_LINK_MESSAGE);
+
     }
 }
