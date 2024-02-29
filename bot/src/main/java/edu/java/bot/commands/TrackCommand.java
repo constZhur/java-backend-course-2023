@@ -6,9 +6,7 @@ import edu.java.bot.models.User;
 import edu.java.bot.parsers.LinkParser;
 import edu.java.bot.repositories.UserRepository;
 import java.net.URI;
-import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -65,9 +63,6 @@ public class TrackCommand implements Command {
 
     private SendMessage addLinkToTrack(User user, String link) {
         long chatId = user.getId();
-        if (!isValidURL(link)) {
-            return new SendMessage(chatId, UNSUPPORTED_RESOURCE_MESSAGE);
-        }
 
         URI uri = URI.create(link);
         for (LinkParser l : links) {
@@ -78,14 +73,5 @@ public class TrackCommand implements Command {
             }
         }
         return new SendMessage(chatId, WRONG_COMMAND_FORMAT_MESSAGE);
-    }
-
-    public static boolean isValidURL(String link) {
-        List<Pattern> urlPatterns = Arrays.asList(
-            Pattern.compile("https?://github\\.com/.*"),
-            Pattern.compile("https?://stackoverflow\\.com/.*")
-        );
-
-        return urlPatterns.stream().anyMatch(pattern -> pattern.matcher(link).matches());
     }
 }

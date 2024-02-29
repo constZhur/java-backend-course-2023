@@ -45,7 +45,7 @@ public class MyTelegramBot implements Bot {
             .forEach(update -> {
             try {
                 SendMessage msg = userMessageProcessor.process(update);
-                if (msg != null){
+                if (msg != null) {
                     execute(msg);
                 }
             } catch (Exception e) {

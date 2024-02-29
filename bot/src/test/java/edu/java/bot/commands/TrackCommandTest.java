@@ -58,7 +58,7 @@ public class TrackCommandTest extends AbstractCommandTest {
         Mockito.when(mockUserRepository.getById(CHAT_ID)).thenReturn(mockUser);
         Mockito.when(mockLinkParser.parseLink(Mockito.any())).thenReturn(false);
 
-        assertMessage("Данный ресурс не поддерживается!", trackCommand.handle(mockUpdate));
+        assertMessage("Неверный формат команды", trackCommand.handle(mockUpdate));
     }
 
     @Test
