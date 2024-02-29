@@ -13,6 +13,7 @@ import edu.java.bot.configuration.ApplicationConfig;
 import edu.java.bot.messageHandler.UserMessageProcessor;
 import jakarta.annotation.PostConstruct;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -38,10 +39,15 @@ public class MyTelegramBot implements Bot {
 
     @Override
     public int process(List<Update> updates) {
-        updates.forEach(update -> {
+        updates.stream()
+            .filter(Objects::nonNull)
+            .filter(update -> update.message() != null)
+            .forEach(update -> {
             try {
                 SendMessage msg = userMessageProcessor.process(update);
-                execute(msg);
+                if (msg != null){
+                    execute(msg);
+                }
             } catch (Exception e) {
                 log.error("Ошибка обработки обновления: {}", e.getMessage(), e);
             }

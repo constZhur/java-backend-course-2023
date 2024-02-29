@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.commands.Command;
 import java.util.List;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +18,8 @@ public class UserMessageProcessorImpl implements UserMessageProcessor {
     private static final String ONLY_TEXT_COMMANDS_SUPPORTED_MESSAGE =
         "Бот поддерживает обработку только текстовых сообщений\n"
         + HELP_COMMAND_MESSAGE;
-    private static final String UNSUPPORTED_COMMAND_MESSAGE = "Такая команда не поддерживается ботом\n"
+    private static final String UNSUPPORTED_COMMAND_MESSAGE =
+        "Такая команда не поддерживается ботом\n"
         + HELP_COMMAND_MESSAGE;
 
 
