@@ -27,7 +27,7 @@ public class TrackCommand implements Command {
         "Недостаточно параметров. Введите все необходимые данные!";
     private static final String USER_NOT_FOUND_MESSAGE = "Пользователь не найден.\n"
         + "Перезапустите бота с помощью /start";
-    private static final String WRONG_LINK_FORMAT_MESSAGE = "Неверный формат ссылки";
+    private static final String WRONG_COMMAND_FORMAT_MESSAGE = "Неверный формат команды";
     private static final String LINK_ADDED_SUCCESSFULLY_MESSAGE = "Ссылка добавлена!";
     private static final String LINK_ALREADY_TRACKED_MESSAGE = "Данный ресурс уже отслеживается";
     private static final String UNSUPPORTED_RESOURCE_MESSAGE = "Данный ресурс не поддерживается!";
@@ -66,7 +66,7 @@ public class TrackCommand implements Command {
     private SendMessage addLinkToTrack(User user, String link) {
         long chatId = user.getId();
         if (!isValidURL(link)) {
-            return new SendMessage(chatId, WRONG_LINK_FORMAT_MESSAGE);
+            return new SendMessage(chatId, UNSUPPORTED_RESOURCE_MESSAGE);
         }
 
         URI uri = URI.create(link);
@@ -77,7 +77,7 @@ public class TrackCommand implements Command {
                     : LINK_ALREADY_TRACKED_MESSAGE);
             }
         }
-        return new SendMessage(chatId, UNSUPPORTED_RESOURCE_MESSAGE);
+        return new SendMessage(chatId, WRONG_COMMAND_FORMAT_MESSAGE);
     }
 
     public static boolean isValidURL(String link) {
