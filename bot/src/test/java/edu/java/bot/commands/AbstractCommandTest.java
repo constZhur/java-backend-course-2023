@@ -2,14 +2,22 @@ package edu.java.bot.commands;
 
 import com.pengrad.telegrambot.model.*;
 import com.pengrad.telegrambot.request.SendMessage;
+import edu.java.bot.repositories.UserRepository;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public abstract class AbstractCommandTest {
+    @Mock
+    protected UserRepository mockUserRepository;
+
     @Mock
     protected Update mockUpdate;
 
@@ -21,7 +29,8 @@ public abstract class AbstractCommandTest {
 
     protected static final long CHAT_ID = 1L;
 
-    protected void setUpMocks() {
+    @BeforeEach
+    protected void setUp() {
         Mockito.when(mockUpdate.message()).thenReturn(mockMessage);
         Mockito.when(mockMessage.chat()).thenReturn(mockChat);
         Mockito.when(mockChat.id()).thenReturn(CHAT_ID);

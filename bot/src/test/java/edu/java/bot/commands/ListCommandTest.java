@@ -2,12 +2,10 @@ package edu.java.bot.commands;
 
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.models.User;
-import edu.java.bot.repositories.UserRepository;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Collections;
@@ -17,11 +15,13 @@ import java.util.Set;
 
 @ExtendWith(MockitoExtension.class)
 public class ListCommandTest extends AbstractCommandTest {
-    @Mock
-    private UserRepository mockUserRepository;
-
-    @InjectMocks
     private ListCommand listCommand;
+
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        listCommand = new ListCommand(mockUserRepository);
+    }
 
     @Test
     public void testCommand() {
@@ -36,7 +36,6 @@ public class ListCommandTest extends AbstractCommandTest {
 
     @Test
     public void testHandleUserNotFound() {
-        setUpMocks();
         Mockito.when(mockUserRepository.getById(CHAT_ID)).thenReturn(null);
 
         String  expectedText = "Пользователь не был найден.\n"
@@ -48,7 +47,6 @@ public class ListCommandTest extends AbstractCommandTest {
 
     @Test
     public void testHandleEmptyTrackedList() {
-        setUpMocks();
         Set<String> emptySet = Collections.emptySet();
         Mockito.when(mockUserRepository.getById(CHAT_ID)).thenReturn(new User(CHAT_ID, emptySet));
 
@@ -61,14 +59,14 @@ public class ListCommandTest extends AbstractCommandTest {
 
     @Test
     public void testHandleWithTrackedLinks() {
-        setUpMocks();
-        Set<String> links = new HashSet<>(List.of("https://google.com", "https://github.com"));
+        Set<String> links = new HashSet<>(List.of("https://google.com/", "https://github.com/"));
         Mockito.when(mockUserRepository.getById(CHAT_ID)).thenReturn(new User(CHAT_ID, links));
 
-        String expectedText = "Список отслеживаемых ссылок:\n"
-            + "- https://google.com\n- https://github.com\n";
+        String expectedText = "Список отслеживаемых ссылок:\n- https://github.com/\n- https://google.com/\n";
         SendMessage msg = listCommand.handle(mockUpdate);
+        boolean displayWebPagePreview = (boolean) msg.getParameters().get("disable_web_page_preview");
 
         assertMessage(expectedText, msg);
+        Assertions.assertTrue(displayWebPagePreview);
     }
 }

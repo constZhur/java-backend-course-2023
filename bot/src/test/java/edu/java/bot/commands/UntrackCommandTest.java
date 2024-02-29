@@ -2,13 +2,10 @@ package edu.java.bot.commands;
 
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.models.User;
-import edu.java.bot.repositories.UserRepository;
-import edu.java.bot.repositories.UserRepositoryImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -16,14 +13,16 @@ import java.util.HashSet;
 
 @ExtendWith(MockitoExtension.class)
 public class UntrackCommandTest extends AbstractCommandTest {
-    @Mock
-    private UserRepository mockUserRepository;
+    private UntrackCommand untrackCommand;
 
     @Mock
     private User mockUser;
 
-    @InjectMocks
-    private UntrackCommand untrackCommand;
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        untrackCommand = new UntrackCommand(mockUserRepository);
+    }
 
     @Test
     public void testCommand() {
@@ -37,18 +36,17 @@ public class UntrackCommandTest extends AbstractCommandTest {
     }
 
     @Test
-    public void testHandleWithRequestForLinkEntry() {
-        setUpMocks();
-        String expectedText = "Введите ссылку, за которой необходимо перестать следить:";
-        SendMessage msg = untrackCommand.handle(mockUpdate);
+    public void testHandleWhenLinkNotSent(){
+        Mockito.when(mockMessage.text()).thenReturn("/untrack");
 
-        assertMessage(expectedText, msg);
+        String expectedText = "Недостаточно параметров. Введите все необходимые данные!";
+
+        assertMessage(expectedText, untrackCommand.handle(mockUpdate));
     }
 
     @Test
     public void testHandleWhenNoSuchLink() {
-        setUpMocks();
-        Mockito.when(mockMessage.text()).thenReturn("https://github.com");
+        Mockito.when(mockMessage.text()).thenReturn("/untruck https://edu.tinkoff.ru/");
         Mockito.when(mockUserRepository.getById(1L)).thenReturn(null);
 
         String expectedText = "Пользователь не найден.\n"
@@ -58,32 +56,39 @@ public class UntrackCommandTest extends AbstractCommandTest {
         assertMessage(expectedText, msg);
     }
 
+
     @Test
     public void testHandleWhenLinkRemovedSuccessfully() {
-        setUpMocks();
-        Mockito.when(mockMessage.text()).thenReturn("https://github.com");
+        Mockito.when(mockMessage.text()).thenReturn("/untrack https://github.com/");
         HashSet<String> trackedLinks = new HashSet<>();
-        trackedLinks.add("https://github.com");
+        trackedLinks.add("https://github.com/");
         Mockito.when(mockUser.getLinks()).thenReturn(trackedLinks);
         Mockito.when(mockUserRepository.getById(CHAT_ID)).thenReturn(mockUser);
 
-        String expectedText = "Отслеживание ссылки прекращено!";;
-        SendMessage msg = untrackCommand.handle(mockUpdate);
+        String expectedText = "Отслеживание ссылки прекращено!";
+        SendMessage actual = untrackCommand.handle(mockUpdate);
 
-        assertMessage(expectedText, msg);
+        assertMessage(expectedText, actual);
     }
 
     @Test
-    public void testHandle_LinkNotTracked() {
-        setUpMocks();
-        Mockito.when(mockMessage.text()).thenReturn("https://github.com");
+    public void testHandleWhenLinkNotTracked() {
+        Mockito.when(mockMessage.text()).thenReturn("/untrack https://github.com/");
         Mockito.when(mockUser.getLinks()).thenReturn(new HashSet<>());
         Mockito.when(mockUserRepository.getById(CHAT_ID)).thenReturn(mockUser);
 
         String expectedText = "Данного ресурса нет среди отслеживаемых";
-        SendMessage msg = untrackCommand.handle(mockUpdate);
+        SendMessage actual = untrackCommand.handle(mockUpdate);
 
-        assertMessage(expectedText, msg);
+        assertMessage(expectedText, actual);
     }
 
+    @Test
+    public void testHandleWhenUserNotFound() {
+        Mockito.when(mockMessage.text()).thenReturn("/untrack https://github.com/");
+        Mockito.when(mockUserRepository.getById(CHAT_ID)).thenReturn(null);
+
+        assertMessage("Пользователь не найден.\nПерезапустите бота с помощью /start",
+            untrackCommand.handle(mockUpdate));
+    }
 }
