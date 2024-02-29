@@ -30,3 +30,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Private Environment Variables ###
+bot/src/main/resources/.env
