@@ -6,12 +6,12 @@ import edu.java.exception.LinkNotFoundException;
 import edu.java.exception.RegisteredUserExistsException;
 import edu.java.model.Link;
 import edu.java.model.User;
-import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
