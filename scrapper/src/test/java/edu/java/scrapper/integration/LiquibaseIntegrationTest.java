@@ -1,0 +1,107 @@
+package edu.java.scrapper.integration;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.jdbc.DataSourceBuilder;
+import org.springframework.jdbc.core.JdbcTemplate;
+import java.util.List;
+import static org.assertj.core.api.Assertions.assertThat;;
+
+public class LiquibaseIntegrationTest extends IntegrationTest {
+    private static JdbcTemplate jdbcTemplate;
+
+    private final long chatId1 = 1L;
+    private final long chatId2 = 2L;
+    private final long chatId3 = 3L;
+
+    private final String username1 = "constZhur";
+    private final String username2 = "lwbeamer";
+    private final String username3 = "sanyarnd";
+
+    private final String link1 = "https://github.com/lwbeamer/clound-project";
+    private final String link2 = "https://stackoverflow.com/questions/46125417/how-to-mock-a-service-using-wiremock";
+    private final String link3 = "https://github.com/constZhur/java-backend-course-2023";
+
+    @BeforeAll
+    public static void setUp() {
+        jdbcTemplate = new JdbcTemplate(
+            DataSourceBuilder.create()
+                .url(POSTGRES.getJdbcUrl())
+                .username(POSTGRES.getUsername())
+                .password(POSTGRES.getPassword())
+                .build()
+        );
+    }
+
+    @Test
+    void testScrapperDBConnectionProperties() {
+        assertThat(POSTGRES.isRunning()).isTrue();
+        assertThat(POSTGRES.getUsername()).isEqualTo("postgres");
+        assertThat(POSTGRES.getPassword()).isEqualTo("postgres");
+        assertThat(POSTGRES.getDatabaseName()).isEqualTo("scrapper");
+    }
+
+    @Test
+    void testScrapperDBUserChatTable() {
+        insertUserChat(chatId1, username1);
+        insertUserChat(chatId2, username2);
+
+        List<String> actualUsernames = selectUsernamesFromChatTable();
+
+        assertThat(actualUsernames.size()).isEqualTo(2);
+        assertThat(actualUsernames).containsExactlyInAnyOrder(username1, username2);
+    }
+
+    @Test
+    void testScrapperDBLinkTable() {
+        insertLink(link1);
+        insertLink(link2);
+
+        List<String> actualLink = selectUrlsFromLinkTable();
+
+        assertThat(actualLink.size()).isEqualTo(2);
+        assertThat(actualLink).containsExactlyInAnyOrder(link1, link2);
+    }
+
+    @Test
+    void testScrapperDBLinkChatRelations() {
+        insertUserChat(chatId3, username3);
+
+        insertLink(link3);
+
+        insertChatLink(chatId3, 3L);
+
+        int link3Count = selectChatLinkCountForLinkId(3L);
+        assertThat(link3Count).isEqualTo(1);
+    }
+
+    private void insertUserChat(long chatId, String name) {
+        String insertSql = "INSERT INTO user_chat (id, name) VALUES (?, ?)";
+        jdbcTemplate.update(insertSql, chatId, name);
+    }
+
+    private void insertLink(String url) {
+        String insertSql = "INSERT INTO link (url) VALUES (?)";
+        jdbcTemplate.update(insertSql, url);
+    }
+
+    private void insertChatLink(long chatId, long linkId) {
+        String insertSql = "INSERT INTO link_chat_relations (chat_id, link_id) VALUES (?, ?)";
+        jdbcTemplate.update(insertSql, chatId, linkId);
+    }
+
+    private List<String> selectUsernamesFromChatTable() {
+        String selectSql = "SELECT name FROM user_chat";
+        return jdbcTemplate.query(selectSql, (rs, rowNum) -> rs.getString("name"));
+    }
+
+    private List<String> selectUrlsFromLinkTable() {
+        String selectSql = "SELECT url FROM link";
+        return jdbcTemplate.query(selectSql, (rs, rowNum) -> rs.getString("url"));
+    }
+
+    private int selectChatLinkCountForLinkId(long linkId) {
+        String selectSql = "SELECT COUNT(*) FROM link_chat_relations WHERE link_id = ?";
+        return jdbcTemplate.queryForObject(selectSql, Integer.class, linkId);
+    }
+}
