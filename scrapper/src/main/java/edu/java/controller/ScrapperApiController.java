@@ -6,7 +6,9 @@ import edu.java.dto.response.ApiErrorResponse;
 import edu.java.dto.response.LinkResponse;
 import edu.java.dto.response.ListLinksResponse;
 import edu.java.model.Link;
-import edu.java.service.UserService;
+import edu.java.model.User;
+import edu.java.service.jdbc.JdbcLinkService;
+import edu.java.service.jdbc.JdbcUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -32,7 +34,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Validated
 public class ScrapperApiController {
-    private final UserService userService;
+    private final JdbcLinkService linkService;
+    private final JdbcUserService userService;
 
     @Operation(
         summary = "Убрать отслеживание ссылки",
@@ -53,7 +56,7 @@ public class ScrapperApiController {
         @NotNull @RequestHeader(value = "Tg-Chat-Id") Long tgChatId,
         @Valid @RequestBody RemoveLinkRequest removeLinkRequest
     ) {
-        userService.deleteLink(tgChatId, removeLinkRequest.link());
+        linkService.removeUserLink(tgChatId, new Link(removeLinkRequest.link()));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -70,11 +73,11 @@ public class ScrapperApiController {
     )
     @GetMapping("/links")
     ResponseEntity<ListLinksResponse> getLinks(@NotNull @RequestHeader(value = "Tg-Chat-Id") Long tgChatId) {
-        List<Link> links =  userService.getLinks(tgChatId);
+        List<Link> links =  linkService.getAllUserLinks(tgChatId);
         List<LinkResponse> linksResponses = links.stream().map(
             link -> {
                 try {
-                    return new LinkResponse(link.getId(), new URI(link.getLink()));
+                    return new LinkResponse(link.getId(), new URI(link.getUrl()));
                 } catch (URISyntaxException e) {
                     throw new RuntimeException(e);
                 }
@@ -103,9 +106,10 @@ public class ScrapperApiController {
         @NotNull @RequestHeader(value = "Tg-Chat-Id") Long tgChatId,
         @Valid @RequestBody AddLinkRequest addLinkRequest
     ) throws URISyntaxException {
-        Link link = userService.addLink(tgChatId, addLinkRequest.link());
+        linkService.addLinkForUser(tgChatId, new Link(addLinkRequest.link()));
+        Link newLink = linkService.getLinkByUrl(addLinkRequest.link()).get();
         return new ResponseEntity<>(
-            new LinkResponse(link.getId(), new URI(link.getLink())),
+            new LinkResponse(newLink.getId(), new URI(newLink.getUrl())),
             HttpStatus.OK
         );
     }
@@ -126,7 +130,7 @@ public class ScrapperApiController {
     public ResponseEntity<Void> deleteChat(
         @PathVariable Long id
     ) {
-        userService.deleteUser(id);
+        userService.unregisterUserChat(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -144,7 +148,7 @@ public class ScrapperApiController {
     public ResponseEntity<Void> addChat(
         @PathVariable Long id
     ) {
-        userService.addUser(id);
+        userService.registerUserChat(new User(id));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
