@@ -1,9 +1,9 @@
 package edu.java.bot.client;
 
-import edu.java.bot.dto.AddLinkRequest;
-import edu.java.bot.dto.LinkResponse;
-import edu.java.bot.dto.ListLinksResponse;
-import edu.java.bot.dto.RemoveLinkRequest;
+import edu.java.bot.dto.request.AddLinkRequest;
+import edu.java.bot.dto.request.RemoveLinkRequest;
+import edu.java.bot.dto.response.LinkResponse;
+import edu.java.bot.dto.response.ListLinksResponse;
 import org.hibernate.validator.constraints.URL;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
@@ -30,16 +30,16 @@ public class ScrapperClient implements WebScrapperClient {
         this.webClient = WebClient.builder().baseUrl(this.url).build();
     }
 
-    public Void registerChat(Long chatId) {
-        return webClient
+    public void registerChat(Long chatId) {
+        webClient
             .post().uri(TG_CHAT_ENDPOINT + "/" + chatId)
             .retrieve()
             .bodyToMono(Void.class)
             .block();
     }
 
-    public Void deleteChat(Long chatId) {
-        return webClient.delete()
+    public void deleteChat(Long chatId) {
+        webClient.delete()
             .uri(TG_CHAT_ENDPOINT + "/" + chatId)
             .retrieve()
             .bodyToMono(Void.class)

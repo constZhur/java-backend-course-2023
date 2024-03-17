@@ -1,6 +1,6 @@
 package edu.java.bot.service;
 
-import edu.java.bot.dto.LinkUpdateRequest;
+import edu.java.bot.dto.request.LinkUpdateRequest;
 import edu.java.bot.exception.AddedLinkExistsException;
 import java.util.ArrayList;
 import java.util.List;
