@@ -3,6 +3,7 @@ app:
     enable: true
     interval: 10s
     force-check-delay: 10s
+  database-access-type: jdbc
 
 api:
   github:
@@ -17,9 +18,15 @@ spring:
   application:
     name: scrapper
   datasource:
-    url: jdbc:postgresql://localhost:5433/scrapper
+    url: jdbc:postgresql://localhost:5432/scrapper
     username: postgres
     password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    liquibase:
+      enabled: false
 
 server:
   port: 8080

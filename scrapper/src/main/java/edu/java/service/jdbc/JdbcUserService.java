@@ -6,13 +6,12 @@ import edu.java.model.User;
 import edu.java.repository.jdbc.JdbcUserRepository;
 import edu.java.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import java.util.Optional;
 
-@Service
 @RequiredArgsConstructor
 public class JdbcUserService implements UserService {
-    JdbcUserRepository userRepository;
+
+    private final JdbcUserRepository userRepository;
 
     @Override
     public void registerUserChat(User user) {

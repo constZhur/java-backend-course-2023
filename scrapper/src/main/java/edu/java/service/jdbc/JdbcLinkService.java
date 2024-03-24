@@ -7,16 +7,14 @@ import edu.java.model.Link;
 import edu.java.repository.jdbc.JdbcLinkRepository;
 import edu.java.service.LinkService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 
-@Service
 @RequiredArgsConstructor
 public class JdbcLinkService implements LinkService {
-    JdbcLinkRepository linkRepository;
-    JdbcUserService userService;
+    private final JdbcLinkRepository linkRepository;
+    private final JdbcUserService userService;
 
     @Override
     public void addLink(Link link) {
