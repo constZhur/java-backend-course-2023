@@ -9,6 +9,9 @@ api:
     url: https://api.github.com
   stackoverflow:
     url: https://api.stackexchange.com
+  bot:
+    url: http://localhost:8090
+
 
 spring:
   application:
@@ -19,3 +22,7 @@ server:
 
 logging:
   config: classpath:log4j2-plain.xml
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui

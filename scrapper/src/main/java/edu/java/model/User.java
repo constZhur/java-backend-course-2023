@@ -1,4 +1,4 @@
-package edu.java.bot.models;
+package edu.java.model;
 
 import java.util.Set;
 import lombok.AllArgsConstructor;
@@ -8,6 +8,5 @@ import lombok.Data;
 @AllArgsConstructor
 public class User {
     private Long id;
-    private Set<String> links;
-
+    private Set<Link> links;
 }
