@@ -1,12 +1,11 @@
 package edu.java.model;
 
 import jakarta.validation.constraints.NotNull;
+import java.time.OffsetDateTime;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.time.OffsetDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor

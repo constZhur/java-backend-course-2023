@@ -2,16 +2,16 @@ package edu.java.repository.jdbc;
 
 import edu.java.model.Link;
 import edu.java.repository.LinkRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
@@ -37,7 +37,8 @@ public class JdbcLinkRepository implements LinkRepository {
 
     @Override
     public Optional<Link> findUserLinkByUrl(Long id, String url) {
-        List<Link> links = jdbcTemplate.query("SELECT l.* FROM link l JOIN link_chat_relations cl ON cl.chat_id = ? AND cl.link_id = l.id WHERE l.url = ?", this::mapLink, url);
+        List<Link> links = jdbcTemplate.query("SELECT l.* FROM link l JOIN link_chat_relations cl ON cl.chat_id = ? "
+            + "AND cl.link_id = l.id WHERE l.url = ?", this::mapLink, url);
         return links.isEmpty() ? Optional.empty() : Optional.of(links.get(0));
     }
 

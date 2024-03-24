@@ -6,11 +6,11 @@ import edu.java.exception.LinkNotFoundException;
 import edu.java.model.Link;
 import edu.java.repository.jdbc.JdbcLinkRepository;
 import edu.java.service.LinkService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -33,9 +33,6 @@ public class JdbcLinkService implements LinkService {
         }
 
         foundLink = linkRepository.findLinkByUrl(link.getUrl());
-        if (foundLink.isEmpty()){
-
-        }
     }
 
     @Override
@@ -65,7 +62,7 @@ public class JdbcLinkService implements LinkService {
     }
 
     @Override
-    public void removeLink(Long id) throws LinkNotFoundException{
+    public void removeLink(Long id) throws LinkNotFoundException {
         linkRepository.remove(id);
     }
 

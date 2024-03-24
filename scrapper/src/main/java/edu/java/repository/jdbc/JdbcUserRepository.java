@@ -2,13 +2,13 @@ package edu.java.repository.jdbc;
 
 import edu.java.model.User;
 import edu.java.repository.UserRepository;
+import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.List;
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -38,5 +38,12 @@ public class JdbcUserRepository implements UserRepository {
     @Override
     public List<User> findAll() {
         return jdbcTemplate.query("SELECT * FROM user_chat", new BeanPropertyRowMapper<>(User.class));
+    }
+
+    @Override
+    public List<Long> getAllUserChatIdsByLinkId(Long linkId) {
+        return jdbcTemplate.queryForList(
+            "SELECT chat_id FROM link_chat_relations WHERE link_id = ?", Long.class, linkId
+        );
     }
 }

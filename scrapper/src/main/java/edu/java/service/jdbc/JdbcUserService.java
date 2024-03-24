@@ -5,9 +5,10 @@ import edu.java.exception.RegisteredUserExistsException;
 import edu.java.model.User;
 import edu.java.repository.jdbc.JdbcUserRepository;
 import edu.java.service.UserService;
+import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -42,5 +43,10 @@ public class JdbcUserService implements UserService {
         userRepository.findById(id).orElseThrow(
             () -> new ChatNotFoundException()
         );
+    }
+
+    @Override
+    public List<Long> getAllUserChatIdsByLinkId(Long linkId) {
+        return userRepository.getAllUserChatIdsByLinkId(linkId);
     }
 }
