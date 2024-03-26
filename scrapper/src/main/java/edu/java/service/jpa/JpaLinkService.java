@@ -11,13 +11,16 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class JpaLinkService implements LinkService {
     private final JpaLinkRepository linkRepository;
+    private final JpaUserService userService;
 
     @Override
     public void addLink(Link link) {
+        linkRepository.save(link);
     }
 
     @Override
     public void addLinkForUser(Long userId, Link link) {
+        userService.checkThatUserChatExists(userId);
 
     }
 
@@ -28,6 +31,7 @@ public class JpaLinkService implements LinkService {
 
     @Override
     public Optional<Link> getLinkByUrl(String url) {
+        return linkRepository.findByUrl(url);
     }
 
     @Override
@@ -37,12 +41,13 @@ public class JpaLinkService implements LinkService {
 
     @Override
     public List<Link> getAllUserLinks(Long userId) {
+        userService.checkThatUserChatExists(userId);
         return null;
     }
 
     @Override
     public List<Link> getOutdatedLinks(Long linksLimit, Long timeInterval) {
-        return null;
+        return linkRepository.findAllOutdatedLinks(linksLimit, timeInterval);
     }
 
     @Override
@@ -52,13 +57,12 @@ public class JpaLinkService implements LinkService {
 
     @Override
     public void removeUserLink(Long userId, Link link) {
-
+        userService.checkThatUserChatExists(userId);
     }
 
     @Override
     public void updateLinkCheckedTime(Link link, OffsetDateTime newUpdateTime) {
-        Link foundLink = linkRepository.findById(link.getId()).get();
-        foundLink.setCheckedAt(newUpdateTime);
-        linkRepository.save(foundLink);
+        link.setCheckedAt(newUpdateTime);
+        linkRepository.save(link);
     }
 }
