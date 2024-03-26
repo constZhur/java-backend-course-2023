@@ -1,10 +1,14 @@
 package edu.java.scrapper.integration;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;;
 
 public class LiquibaseIntegrationTest extends IntegrationTest {
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     private final long chatId1 = 1L;
     private final long chatId2 = 2L;

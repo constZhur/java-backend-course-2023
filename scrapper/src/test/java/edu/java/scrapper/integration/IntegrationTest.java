@@ -30,8 +30,6 @@ public abstract class IntegrationTest {
     @ServiceConnection
     public static PostgreSQLContainer<?> POSTGRES;
 
-    public static JdbcTemplate jdbcTemplate;
-
     static {
         POSTGRES = new PostgreSQLContainer<>("postgres:15")
             .withDatabaseName("scrapper")
@@ -39,17 +37,6 @@ public abstract class IntegrationTest {
             .withPassword("postgres");
         POSTGRES.start();
         runMigrations(POSTGRES);
-    }
-
-    @BeforeAll
-    public static void setUp() {
-        jdbcTemplate = new JdbcTemplate(
-            DataSourceBuilder.create()
-                .url(POSTGRES.getJdbcUrl())
-                .username(POSTGRES.getUsername())
-                .password(POSTGRES.getPassword())
-                .build()
-        );
     }
 
     private static void runMigrations(JdbcDatabaseContainer<?> c) {
