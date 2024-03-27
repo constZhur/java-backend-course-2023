@@ -17,6 +17,7 @@ import static org.assertj.core.api.Assertions.*;
 
 @Transactional
 @SpringBootTest
+@DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
 public class JdbcUserRepositoryTest extends IntegrationTest {
     @Autowired
     JdbcUserRepository userRepository;

@@ -8,10 +8,7 @@ import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.DirectoryResourceAccessor;
-import org.junit.jupiter.api.AfterEach;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.JdbcDatabaseContainer;
@@ -35,16 +32,6 @@ public abstract class IntegrationTest {
             .withPassword("postgres");
         POSTGRES.start();
         runMigrations(POSTGRES);
-    }
-
-    @Autowired
-    protected JdbcTemplate jdbcTemplate;
-
-    @AfterEach
-    public void clearDatabase() {
-        jdbcTemplate.execute("DELETE FROM user_chat");
-        jdbcTemplate.execute("DELETE FROM link");
-        jdbcTemplate.execute("DELETE FROM link_chat_relations");
     }
 
     private static void runMigrations(JdbcDatabaseContainer<?> c) {
