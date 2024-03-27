@@ -22,7 +22,6 @@ services:
       - --url=jdbc:postgresql://postgresql:5432/scrapper
       - --username=postgres
       - --password=postgres
-      - --log-level=debug
       - update
     volumes:
       - ./migrations:/liquibase/changelog

@@ -10,7 +10,7 @@ public interface LinkRepository {
 
     Optional<Link> findById(Long id);
 
-    Optional<Link> findLinkByUrl(String url);
+    Optional<Link> findByUrl(String url);
 
     Optional<Link> findUserLinkByUrl(Long userId, String url);
 

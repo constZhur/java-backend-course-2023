@@ -17,8 +17,13 @@ public class JdbcUserRepository implements UserRepository {
 
     @Override
     public void add(User userChat) {
-        jdbcTemplate.update("INSERT INTO user_chat (name) VALUES ?",
+        jdbcTemplate.update("INSERT INTO user_chat (id, name) VALUES (?, ?)", userChat.getId(),
             userChat.getName());
+    }
+
+    @Override
+    public void addLinkForUser(Long userId, Long linkId) {
+        jdbcTemplate.update("INSERT INTO link_chat_relations (chat_id, link_id) VALUES (?, ?)", userId, linkId);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package edu.java.service.jdbc;
 
-import edu.java.exception.AddedLinkExistsException;
 import edu.java.exception.ChatNotFoundException;
 import edu.java.exception.LinkNotFoundException;
 import edu.java.model.Link;
@@ -15,8 +14,8 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class JdbcLinkService implements LinkService {
-    JdbcLinkRepository linkRepository;
-    JdbcUserService userService;
+    private final JdbcLinkRepository linkRepository;
+    private final JdbcUserService userService;
 
     @Override
     public void addLink(Link link) {
@@ -24,25 +23,25 @@ public class JdbcLinkService implements LinkService {
     }
 
     @Override
-    public void addLinkForUser(Long userId, Link link) {
-        userService.checkThatUserChatExists(userId);
+    public Optional<Link> getLinkById(Long id) {
+        Optional<Link> foundLink = linkRepository.findById(id);
 
-        Optional<Link> foundLink = linkRepository.findUserLinkByUrl(userId, link.getUrl());
-        if (foundLink.isPresent()) {
-            throw new AddedLinkExistsException();
+        if (foundLink.isEmpty()) {
+            throw new LinkNotFoundException();
         }
 
-        foundLink = linkRepository.findLinkByUrl(link.getUrl());
-    }
-
-    @Override
-    public Optional<Link> getLinkById(Long id) throws LinkNotFoundException {
-        return linkRepository.findById(id);
+        return foundLink;
     }
 
     @Override
     public Optional<Link> getLinkByUrl(String url) {
-        return Optional.empty();
+        Optional<Link> foundLink = linkRepository.findByUrl(url);
+
+        if (foundLink.isEmpty()) {
+            throw new LinkNotFoundException();
+        }
+
+        return foundLink;
     }
 
     @Override
@@ -51,8 +50,11 @@ public class JdbcLinkService implements LinkService {
     }
 
     @Override
-    public List<Link> getAllUserLinks(Long userId) throws ChatNotFoundException {
-        userService.checkThatUserChatExists(userId);
+    public List<Link> getAllUserLinks(Long userId) {
+        if (!userService.checkThatUserChatExists(userId)) {
+            throw new ChatNotFoundException();
+        }
+
         return linkRepository.findAllUserLinks(userId);
     }
 
@@ -62,7 +64,11 @@ public class JdbcLinkService implements LinkService {
     }
 
     @Override
-    public void removeLink(Long id) throws LinkNotFoundException {
+    public void removeLink(Long id) {
+        Optional<Link> foundLink = linkRepository.findById(id);
+        if (foundLink.isEmpty()) {
+            throw new LinkNotFoundException("Link with id " + id + " not found");
+        }
         linkRepository.remove(id);
     }
 

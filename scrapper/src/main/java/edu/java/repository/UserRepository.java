@@ -8,6 +8,8 @@ public interface UserRepository {
 
     void add(User userChat);
 
+    void addLinkForUser(Long userId, Long linkId);
+
     Optional<User> findById(Long id);
 
     void remove(Long id);

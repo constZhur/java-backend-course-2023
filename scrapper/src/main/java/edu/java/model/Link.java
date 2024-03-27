@@ -20,4 +20,9 @@ public class Link {
     public Link(String url) {
         this.url = url;
     }
+
+    public Link(String url, OffsetDateTime checkedAt) {
+        this.url = url;
+        this.checkedAt = checkedAt;
+    }
 }

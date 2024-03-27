@@ -9,6 +9,7 @@ import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +21,7 @@ public class JdbcLinkRepository implements LinkRepository {
 
     @Override
     public void add(Link link) {
-        jdbcTemplate.update("INSERT INTO link (url) VALUES (?)", link.getUrl());
+        jdbcTemplate.update("INSERT INTO link (id, url) VALUES (?, ?)", link.getId(), link.getUrl());
     }
 
     @Override
@@ -30,7 +31,7 @@ public class JdbcLinkRepository implements LinkRepository {
     }
 
     @Override
-    public Optional<Link> findLinkByUrl(String url) {
+    public Optional<Link> findByUrl(String url) {
         List<Link> links = jdbcTemplate.query("SELECT * FROM link WHERE url = ?", this::mapLink, url);
         return links.isEmpty() ? Optional.empty() : Optional.of(links.get(0));
     }
@@ -49,16 +50,18 @@ public class JdbcLinkRepository implements LinkRepository {
 
     @Override
     public List<Link> findAllUserLinks(Long userId) {
-        return jdbcTemplate.query("""
-                SELECT l.* FROM link l JOIN link_chat_relations r ON l.id = r.link_id WHERE r.chat_id = ?
-                """, this::mapLink, userId);
+        return jdbcTemplate.query(
+            "SELECT l.* FROM link l \n"
+                + "JOIN link_chat_relations r ON l.id = r.link_id \n"
+                + "WHERE r.chat_id = ?",
+            this::mapLink, userId
+        );
     }
 
     @Override
     public List<Link> findOutdatedLinks(Long linksLimit, Long timeInterval) {
-        return jdbcTemplate.query("""
-                SELECT * FROM link WHERE checked_at < NOW() - INTERVAL '? seconds' LIMIT ?
-                """, this::mapLink, timeInterval, linksLimit);
+        String sql = "SELECT * FROM link WHERE checked_at < NOW() - INTERVAL '" + timeInterval + " SECOND' LIMIT ?";
+        return jdbcTemplate.query(sql, new Object[]{linksLimit}, new BeanPropertyRowMapper<>(Link.class));
     }
 
     @Override

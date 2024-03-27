@@ -7,6 +7,8 @@ import edu.java.dto.response.LinkResponse;
 import edu.java.dto.response.ListLinksResponse;
 import edu.java.model.Link;
 import edu.java.model.User;
+import edu.java.service.LinkService;
+import edu.java.service.UserService;
 import edu.java.service.jdbc.JdbcLinkService;
 import edu.java.service.jdbc.JdbcUserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,8 +36,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Validated
 public class ScrapperApiController {
-    private final JdbcLinkService linkService;
-    private final JdbcUserService userService;
+    private final LinkService linkService;
+    private final UserService userService;
 
     @Operation(
         summary = "Убрать отслеживание ссылки",
@@ -106,7 +108,7 @@ public class ScrapperApiController {
         @NotNull @RequestHeader(value = "Tg-Chat-Id") Long tgChatId,
         @Valid @RequestBody AddLinkRequest addLinkRequest
     ) throws URISyntaxException {
-        linkService.addLinkForUser(tgChatId, new Link(addLinkRequest.link()));
+        userService.addLinkForUser(tgChatId, new Link(addLinkRequest.link()));
         Link newLink = linkService.getLinkByUrl(addLinkRequest.link()).get();
         return new ResponseEntity<>(
             new LinkResponse(newLink.getId(), new URI(newLink.getUrl())),

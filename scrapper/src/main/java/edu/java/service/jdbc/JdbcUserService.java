@@ -2,7 +2,9 @@ package edu.java.service.jdbc;
 
 import edu.java.exception.ChatNotFoundException;
 import edu.java.exception.RegisteredUserExistsException;
+import edu.java.model.Link;
 import edu.java.model.User;
+import edu.java.repository.jdbc.JdbcLinkRepository;
 import edu.java.repository.jdbc.JdbcUserRepository;
 import edu.java.service.UserService;
 import java.util.List;
@@ -13,7 +15,8 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class JdbcUserService implements UserService {
-    JdbcUserRepository userRepository;
+    private final JdbcUserRepository userRepository;
+    private final JdbcLinkRepository linkRepository;
 
     @Override
     public void registerUserChat(User user) {
@@ -39,14 +42,38 @@ public class JdbcUserService implements UserService {
     }
 
     @Override
-    public void checkThatUserChatExists(Long id) {
+    public boolean checkThatUserChatExists(Long id) {
         userRepository.findById(id).orElseThrow(
-            () -> new ChatNotFoundException()
+            ChatNotFoundException::new
         );
+        return true;
     }
 
     @Override
     public List<Long> getAllUserChatIdsByLinkId(Long linkId) {
         return userRepository.getAllUserChatIdsByLinkId(linkId);
+    }
+
+    @Override
+    public void addLinkForUser(Long userId, Link link) {
+        if (!checkThatUserChatExists(userId)) {
+            throw new ChatNotFoundException();
+        }
+
+        Optional<User> foundUser = userRepository.findById(userId);
+        if (foundUser.isPresent()) {
+            Optional<Link> foundLink = linkRepository.findByUrl(link.getUrl());
+            Long linkId;
+            if (foundLink.isEmpty()) {
+                linkRepository.add(link);
+                linkId = link.getId();
+            } else {
+                linkId = foundLink.get().getId();
+            }
+
+            userRepository.addLinkForUser(userId, linkId);
+        } else {
+            throw new ChatNotFoundException();
+        }
     }
 }

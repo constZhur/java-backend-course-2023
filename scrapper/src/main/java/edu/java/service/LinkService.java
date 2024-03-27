@@ -9,7 +9,7 @@ public interface LinkService {
 
     void addLink(Link link);
 
-    void addLinkForUser(Long userId, Link link);
+    //void addLinkForUser(Long userId, Link link);
 
     Optional<Link> getLinkById(Long id);
 
