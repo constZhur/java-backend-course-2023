@@ -9,8 +9,6 @@ import edu.java.model.Link;
 import edu.java.model.User;
 import edu.java.service.LinkService;
 import edu.java.service.UserService;
-import edu.java.service.jdbc.JdbcLinkService;
-import edu.java.service.jdbc.JdbcUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
