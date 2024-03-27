@@ -14,9 +14,6 @@ import static org.assertj.core.api.Assertions.assertThat;;
 @Transactional
 public class LiquibaseIntegrationTest extends IntegrationTest {
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-
     private final Long chatId1 = 1L;
     private final Long chatId2 = 2L;
     private final Long chatId3 = 3L;
