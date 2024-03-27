@@ -8,7 +8,7 @@ import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.DirectoryResourceAccessor;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -40,7 +40,7 @@ public abstract class IntegrationTest {
     @Autowired
     protected JdbcTemplate jdbcTemplate;
 
-    @BeforeEach
+    @AfterEach
     public void clearDatabase() {
         jdbcTemplate.execute("DELETE FROM user_chat");
         jdbcTemplate.execute("DELETE FROM link");
