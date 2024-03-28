@@ -1,18 +1,26 @@
-package edu.java.scrapper.integration;
+package edu.java.scrapper.integration.liquibase;
 
-import org.junit.jupiter.api.BeforeAll;
+import edu.java.scrapper.integration.IntegrationTest;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.jdbc.DataSourceBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;;
 
+@SpringBootTest
+@Transactional
+@DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
 public class LiquibaseIntegrationTest extends IntegrationTest {
-    private static JdbcTemplate jdbcTemplate;
 
-    private final long chatId1 = 1L;
-    private final long chatId2 = 2L;
-    private final long chatId3 = 3L;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    private final Long chatId1 = 1L;
+    private final Long chatId2 = 2L;
+    private final Long chatId3 = 3L;
 
     private final String username1 = "constZhur";
     private final String username2 = "lwbeamer";
@@ -21,17 +29,6 @@ public class LiquibaseIntegrationTest extends IntegrationTest {
     private final String link1 = "https://github.com/lwbeamer/clound-project";
     private final String link2 = "https://stackoverflow.com/questions/46125417/how-to-mock-a-service-using-wiremock";
     private final String link3 = "https://github.com/constZhur/java-backend-course-2023";
-
-    @BeforeAll
-    public static void setUp() {
-        jdbcTemplate = new JdbcTemplate(
-            DataSourceBuilder.create()
-                .url(POSTGRES.getJdbcUrl())
-                .username(POSTGRES.getUsername())
-                .password(POSTGRES.getPassword())
-                .build()
-        );
-    }
 
     @Test
     void testScrapperDBConnectionProperties() {
@@ -54,8 +51,8 @@ public class LiquibaseIntegrationTest extends IntegrationTest {
 
     @Test
     void testScrapperDBLinkTable() {
-        insertLink(link1);
-        insertLink(link2);
+        insertLink(chatId1, link1);
+        insertLink(chatId2, link2);
 
         List<String> actualLink = selectUrlsFromLinkTable();
 
@@ -66,12 +63,10 @@ public class LiquibaseIntegrationTest extends IntegrationTest {
     @Test
     void testScrapperDBLinkChatRelations() {
         insertUserChat(chatId3, username3);
+        insertLink(chatId3, link3);
+        insertChatLink(chatId3, 3);
 
-        insertLink(link3);
-
-        insertChatLink(chatId3, 3L);
-
-        int link3Count = selectChatLinkCountForLinkId(3L);
+        int link3Count = selectChatLinkCountForLinkId(3);
         assertThat(link3Count).isEqualTo(1);
     }
 
@@ -80,9 +75,9 @@ public class LiquibaseIntegrationTest extends IntegrationTest {
         jdbcTemplate.update(insertSql, chatId, name);
     }
 
-    private void insertLink(String url) {
-        String insertSql = "INSERT INTO link (url) VALUES (?)";
-        jdbcTemplate.update(insertSql, url);
+    private void insertLink(Long id, String url) {
+        String insertSql = "INSERT INTO link (id, url) VALUES (?, ?)";
+        jdbcTemplate.update(insertSql, id, url);
     }
 
     private void insertChatLink(long chatId, long linkId) {

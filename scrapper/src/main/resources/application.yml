@@ -11,11 +11,20 @@ api:
     url: https://api.stackexchange.com
   bot:
     url: http://localhost:8090
+  link-updater:
+    interval: 10000
+    limit:  100
 
 
 spring:
   application:
     name: scrapper
+  datasource:
+    url: jdbc:postgresql://localhost:5432/scrapper
+    username: postgres
+    password: postgres
+  liquibase:
+    enabled: false
 
 server:
   port: 8080

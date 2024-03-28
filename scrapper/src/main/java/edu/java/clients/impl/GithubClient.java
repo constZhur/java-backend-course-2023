@@ -1,6 +1,5 @@
 package edu.java.clients.impl;
 
-import edu.java.clients.dto.github.GithubRepoOwner;
 import edu.java.clients.dto.github.GithubResponse;
 import edu.java.clients.interfaces.WebClientGithub;
 import org.springframework.http.HttpStatusCode;
@@ -23,9 +22,9 @@ public class GithubClient implements WebClientGithub {
     }
 
     @Override
-    public GithubResponse fetchGitHubRepository(GithubRepoOwner owner, String repository) {
+    public GithubResponse fetchGitHubRepository(String owner, String repository) {
         return webClient.get()
-            .uri("/repos/{user}/{repo}", owner.login(), repository)
+            .uri("/repos/{user}/{repo}", owner, repository)
             .retrieve()
             .onStatus(HttpStatusCode::isError, clientResponse -> clientResponse.bodyToMono(RuntimeException.class)
                 .flatMap(error -> Mono.error(new RuntimeException("GitHub API Exception"))))
