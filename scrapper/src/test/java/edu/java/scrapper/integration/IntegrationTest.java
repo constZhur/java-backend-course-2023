@@ -16,7 +16,6 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
@@ -26,9 +25,10 @@ import java.sql.SQLException;
 
 @Testcontainers
 public abstract class IntegrationTest {
-    @Container
     @ServiceConnection
     public static PostgreSQLContainer<?> POSTGRES;
+
+    protected static JdbcTemplate jdbcTemplate;
 
     static {
         POSTGRES = new PostgreSQLContainer<>("postgres:15")
@@ -39,11 +39,22 @@ public abstract class IntegrationTest {
         runMigrations(POSTGRES);
     }
 
+    @BeforeAll
+    public static void jdbcTemplateSetUp() {
+        jdbcTemplate = new JdbcTemplate(DataSourceBuilder.create()
+            .url(POSTGRES.getJdbcUrl())
+            .username(POSTGRES.getUsername())
+            .password(POSTGRES.getPassword())
+            .build());
+    }
+
     private static void runMigrations(JdbcDatabaseContainer<?> c) {
         try (Connection connection = DriverManager.getConnection(c.getJdbcUrl(), c.getUsername(), c.getPassword())) {
             Database database = DatabaseFactory.getInstance()
                 .findCorrectDatabaseImplementation(new JdbcConnection(connection));
+
             Path changeLog = Path.of(".").toAbsolutePath().getParent().getParent().resolve("migrations");
+
             Liquibase liquibase = new liquibase.Liquibase(
                 "master.xml",
                 new DirectoryResourceAccessor(changeLog),

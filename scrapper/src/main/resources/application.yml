@@ -12,6 +12,9 @@ api:
     url: https://api.stackexchange.com
   bot:
     url: http://localhost:8090
+  link-updater:
+    interval: 1000
+    limit: 100
 
 
 spring:
@@ -25,8 +28,8 @@ spring:
     hibernate:
       ddl-auto: validate
     show-sql: true
-    liquibase:
-      enabled: false
+  liquibase:
+    enabled: false
 
 server:
   port: 8080

@@ -8,12 +8,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+import java.time.OffsetDateTime;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.time.OffsetDateTime;
-import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,7 +24,7 @@ import java.util.List;
 public class Link {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @NotNull
     @Column(name = "url")
@@ -38,5 +38,16 @@ public class Link {
 
     public Link(String url) {
         this.url = url;
+    }
+
+    public Link(String url, OffsetDateTime checkedAt) {
+        this.url = url;
+        this.checkedAt = checkedAt;
+    }
+
+    public Link(Integer id, String url, OffsetDateTime checkedAt) {
+        this.id = id;
+        this.url = url;
+        this.checkedAt = checkedAt;
     }
 }

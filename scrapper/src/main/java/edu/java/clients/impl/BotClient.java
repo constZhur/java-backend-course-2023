@@ -2,7 +2,7 @@ package edu.java.clients.impl;
 
 import edu.java.clients.dto.BotApiErrorResponse;
 import edu.java.clients.interfaces.WebClientBot;
-import edu.java.dto.response.LinkUpdateResponse;
+import edu.java.dto.request.LinkUpdateRequest;
 import org.hibernate.validator.constraints.URL;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -27,7 +27,7 @@ public class BotClient implements WebClientBot {
     }
 
     @Override
-    public HttpStatus sendUpdates(LinkUpdateResponse linkUpdate) {
+    public HttpStatus sendUpdates(LinkUpdateRequest linkUpdate) {
         return webClient.post()
             .uri("/updates")
             .bodyValue(linkUpdate)

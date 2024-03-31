@@ -1,12 +1,15 @@
 package edu.java.service.jpa;
 
+import edu.java.exception.ChatNotFoundException;
+import edu.java.exception.LinkNotFoundException;
 import edu.java.model.Link;
 import edu.java.repository.jpa.JpaLinkRepository;
 import edu.java.service.LinkService;
-import lombok.RequiredArgsConstructor;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 public class JpaLinkService implements LinkService {
@@ -19,19 +22,25 @@ public class JpaLinkService implements LinkService {
     }
 
     @Override
-    public void addLinkForUser(Long userId, Link link) {
-        userService.checkThatUserChatExists(userId);
+    public Optional<Link> getLinkById(Integer id) {
+        Optional<Link> foundLink = linkRepository.findById(id);
 
-    }
+        if (foundLink.isEmpty()) {
+            throw new LinkNotFoundException();
+        }
 
-    @Override
-    public Optional<Link> getLinkById(Long id) {
-        return linkRepository.findById(id);
+        return foundLink;
     }
 
     @Override
     public Optional<Link> getLinkByUrl(String url) {
-        return linkRepository.findByUrl(url);
+        Optional<Link> foundLink = linkRepository.findByUrl(url);
+
+        if (foundLink.isEmpty()) {
+            throw new LinkNotFoundException();
+        }
+
+        return foundLink;
     }
 
     @Override
@@ -41,8 +50,11 @@ public class JpaLinkService implements LinkService {
 
     @Override
     public List<Link> getAllUserLinks(Long userId) {
-        userService.checkThatUserChatExists(userId);
-        return null;
+        if (!userService.checkThatUserChatExists(userId)) {
+            throw new ChatNotFoundException();
+        }
+
+        return linkRepository.findAllUserLinks(userId);
     }
 
     @Override
@@ -51,13 +63,24 @@ public class JpaLinkService implements LinkService {
     }
 
     @Override
-    public void removeLink(Long id) {
+    @Transactional
+    public void removeLink(Integer id) {
+        Optional<Link> foundLink = linkRepository.findById(id);
+        if (foundLink.isEmpty()) {
+            throw new LinkNotFoundException();
+        }
         linkRepository.deleteById(id);
+        linkRepository.deleteLinkChatRelationsByLinkId(id);
     }
 
     @Override
     public void removeUserLink(Long userId, Link link) {
         userService.checkThatUserChatExists(userId);
+
+        Link linkToDelete = linkRepository.findUserLinkByUrl(userId, link.getUrl())
+            .orElseThrow(LinkNotFoundException::new);
+
+        linkRepository.removeUserLink(userId, linkToDelete.getId());
     }
 
     @Override

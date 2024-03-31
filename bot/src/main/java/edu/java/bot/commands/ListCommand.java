@@ -2,8 +2,8 @@ package edu.java.bot.commands;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.models.User;
-import edu.java.bot.repositories.UserRepository;
+import edu.java.bot.client.ScrapperClient;
+import edu.java.bot.dto.response.ListLinksResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class ListCommand implements Command {
-    private final UserRepository userRepository;
+    private final ScrapperClient client;
 
     private static final String COMMAND = "/list";
     private static final String DESCRIPTION = "Показать список всех отслеживаемых ссылок";
@@ -37,16 +37,10 @@ public class ListCommand implements Command {
     @Override
     public SendMessage handle(Update update) {
         Long chatId = update.message().chat().id();
-        User currentUser = userRepository.getById(chatId);
-
-        if (currentUser == null) {
-            log.info("Пользователь с id чата {} не был найден", chatId);
-            return new SendMessage(chatId, USER_NOT_FOUND);
-        }
+        ListLinksResponse response = client.getAllLinks(chatId);
 
         StringBuilder userLinks = new StringBuilder();
-        currentUser.getLinks().forEach(link -> userLinks.append("- ").append(link).append("\n"));
-
+        response.links().forEach(x -> userLinks.append("- ").append(x.uri()).append("\n"));
 
         log.info("Обработка команды /list для чата: {}", chatId);
         return new SendMessage(chatId,

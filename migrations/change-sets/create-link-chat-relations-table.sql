@@ -3,7 +3,7 @@
 CREATE TABLE IF NOT EXISTS link_chat_relations
 (
     chat_id BIGINT NOT NULL,
-    link_id BIGINT NOT NULL,
+    link_id INTEGER NOT NULL,
     FOREIGN KEY (chat_id) REFERENCES user_chat(id) ON DELETE CASCADE,
     FOREIGN KEY (link_id) REFERENCES link(id) ON DELETE CASCADE,
     PRIMARY KEY (chat_id, link_id)

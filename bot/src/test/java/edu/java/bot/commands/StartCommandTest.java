@@ -1,14 +1,14 @@
 package edu.java.bot.commands;
 
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.models.User;
-import org.junit.jupiter.api.Assertions;
+import edu.java.bot.exception.BotApiBadRequestException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import java.util.HashSet;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
+
 
 @ExtendWith(MockitoExtension.class)
 public class StartCommandTest extends AbstractCommandTest {
@@ -17,39 +17,36 @@ public class StartCommandTest extends AbstractCommandTest {
     @BeforeEach
     public void setup() {
         super.setUp();
-        startCommand = new StartCommand(mockUserRepository);
+        startCommand = new StartCommand(scrapperClient);
     }
 
     @Test
     public void testCommand() {
-        Assertions.assertEquals("/start", startCommand.command());
+        assertThat(startCommand.command()).isEqualTo("/start");
     }
 
     @Test
     public void testDescription(){
-        Assertions.assertEquals("Зарегистироваться в боте",
-            startCommand.description());
+        assertThat(startCommand.description()).isEqualTo("Зарегистироваться в боте");
     }
 
     @Test
     public void testHandleWhenUserNotRegistered() {
-        Mockito.when(mockUserRepository.getById(CHAT_ID)).thenReturn(null);
+        scrapperClient.registerChat(CHAT_ID);
 
         String expectedText = "Добро пожаловать!\nЧтобы увидеть список команд, используйте /help";
         SendMessage msg = startCommand.handle(mockUpdate);
 
         assertMessage(expectedText, msg);
-        Mockito.verify(mockUserRepository).save(new User(CHAT_ID, new HashSet<>()));
     }
 
     @Test
     public void testHandleWhenUserAlreadyRegistered() {
-        Mockito.when(mockUserRepository.getById(CHAT_ID)).thenReturn(new User(CHAT_ID, new HashSet<>()));
+        doThrow(BotApiBadRequestException.class).when(scrapperClient).registerChat(CHAT_ID);
 
         String expectedText = "Бот уже запущен и готов к использованию";
         SendMessage msg = startCommand.handle(mockUpdate);
 
         assertMessage(expectedText, msg);
-        Mockito.verify(mockUserRepository, Mockito.never()).save(Mockito.any());
     }
 }
