@@ -15,6 +15,9 @@ api:
   link-updater:
     interval: 1000
     limit: 100
+  rate-limiter:
+    requests: 100
+    interval: 1
 
 
 spring:

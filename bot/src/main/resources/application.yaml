@@ -4,6 +4,9 @@ app:
 api:
   scrapper:
     url: http://localhost:8080
+  rate-limiter:
+    requests: 100
+    interval: 1
 
 spring:
   application:
