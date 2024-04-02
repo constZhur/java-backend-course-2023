@@ -37,7 +37,7 @@ public class ListCommandTest extends AbstractCommandTest {
 
     @Test
     public void testHandleEmptyTrackedList() {
-        when(scrapperClient.getAllLinks(CHAT_ID)).thenReturn(new ListLinksResponse(Collections.emptyList(), 0));
+        when(scrapperClient.getAllLinksRetry(CHAT_ID)).thenReturn(new ListLinksResponse(Collections.emptyList(), 0));
 
         String expectedText = "В данный момент вы не отслеживание никакие ресурсы.\n"
             + "Начать отслеживание ссылки можно при помощи команды /track";
@@ -53,7 +53,7 @@ public class ListCommandTest extends AbstractCommandTest {
             new LinkResponse(2L, URI.create("https://github.com/")))
         );
 
-        when(scrapperClient.getAllLinks(CHAT_ID)).thenReturn(new ListLinksResponse(links, 2));
+        when(scrapperClient.getAllLinksRetry(CHAT_ID)).thenReturn(new ListLinksResponse(links, 2));
 
         String expectedText = "Список отслеживаемых ссылок:\n- https://google.com/\n- https://github.com/\n";
         SendMessage msg = listCommand.handle(mockUpdate);

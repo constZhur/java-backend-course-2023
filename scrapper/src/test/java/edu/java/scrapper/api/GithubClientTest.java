@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class GithubClientTest {
-    private WebClientGithub client;
+    private GithubClient client;
     private WireMockServer server;
 
     @BeforeEach
@@ -52,7 +52,7 @@ public class GithubClientTest {
                     .withBody(expectedJson)
                     .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)));
 
-        GithubResponse response = client.fetchGitHubRepository("constZhur", repository);
+        GithubResponse response = client.fetchGitHubRepositoryRetry("constZhur", repository);
 
         assertThat(response).isNotNull();
         assertThat(response.id()).isEqualTo(755879057L);
@@ -77,7 +77,7 @@ public class GithubClientTest {
                     .withBody(expectedJson)
                     .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)));
 
-        assertThatThrownBy(() -> client.fetchGitHubRepository(
+        assertThatThrownBy(() -> client.fetchGitHubRepositoryRetry(
              "defaultUser", invalidRepository))
             .isInstanceOf(RuntimeException.class)
             .hasMessage("GitHub API Exception");

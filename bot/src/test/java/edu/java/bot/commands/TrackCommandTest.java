@@ -58,7 +58,7 @@ public class TrackCommandTest extends AbstractCommandTest {
         URI url = URI.create("https://github.com/");
 
         when(mockMessage.text()).thenReturn("/track https://github.com/");
-        when(scrapperClient.addLink(CHAT_ID,
+        when(scrapperClient.addLinkRetry(CHAT_ID,
             new AddLinkRequest(url)))
             .thenThrow(new BotApiBadRequestException(mockErrorResponse));
         when(mockLinkParser.parseLink(Mockito.any())).thenReturn(true);
@@ -72,7 +72,7 @@ public class TrackCommandTest extends AbstractCommandTest {
 
         when(mockMessage.text()).thenReturn("/track https://github.com/");
         when(mockLinkParser.parseLink(Mockito.any())).thenReturn(true);
-        when(scrapperClient.addLink(CHAT_ID, new AddLinkRequest(url))).thenReturn(new LinkResponse(1L, url));
+        when(scrapperClient.addLinkRetry(CHAT_ID, new AddLinkRequest(url))).thenReturn(new LinkResponse(1L, url));
 
         assertMessage("Ссылка добавлена!", trackCommand.handle(mockUpdate));
     }

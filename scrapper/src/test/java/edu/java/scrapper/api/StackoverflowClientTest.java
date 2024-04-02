@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 public class StackoverflowClientTest {
 
     private WireMockServer server;
-    private WebClientStackoverflow client;
+    private StackoverflowClient client;
 
     @BeforeEach
     public void setUp() {
@@ -50,7 +50,7 @@ public class StackoverflowClientTest {
                     .withBody(expectedJson)
                     .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)));
 
-        StackoverflowItemsResponse response = client.fetchStackOverflowQuestion(questionId);
+        StackoverflowItemsResponse response = client.fetchStackOverflowQuestionRetry(questionId);
 
         assertThat(response).isNotNull();
         assertThat(response.items()).hasSize(1);
@@ -80,7 +80,7 @@ public class StackoverflowClientTest {
                     .withBody(expectedJson)
                     .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)));
 
-        assertThatThrownBy(() -> client.fetchStackOverflowQuestion(invalidQuestionId))
+        assertThatThrownBy(() -> client.fetchStackOverflowQuestionRetry(invalidQuestionId))
             .isInstanceOf(RuntimeException.class)
             .hasMessage("StackOverflow API Exception");
     }

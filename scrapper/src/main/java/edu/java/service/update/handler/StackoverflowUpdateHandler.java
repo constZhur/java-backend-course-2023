@@ -26,7 +26,7 @@ public class StackoverflowUpdateHandler implements UpdateHandler {
     public Optional<Update> fetchUpdate(Link link) {
         String url = link.getUrl();
         long questionId = Long.parseLong(url.split("/")[questionIndex]);
-        StackoverflowItemsResponse response = stackoverflowClient.fetchStackOverflowQuestion(questionId);
+        StackoverflowItemsResponse response = stackoverflowClient.fetchStackOverflowQuestionRetry(questionId);
 
         Optional<Update> update = Optional.empty();
         for (var item : response.items()) {

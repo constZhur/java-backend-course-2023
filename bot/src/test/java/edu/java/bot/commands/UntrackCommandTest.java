@@ -45,7 +45,7 @@ public class UntrackCommandTest extends AbstractCommandTest {
     @Test
     public void testHandleWhenLinkRemovedSuccessfully() {
         when(mockMessage.text()).thenReturn("/untrack https://github.com/");
-        when(scrapperClient.deleteLink(CHAT_ID,
+        when(scrapperClient.deleteLinkRetry(CHAT_ID,
             new RemoveLinkRequest(URI.create("https://github.com/"))))
                 .thenReturn(new LinkResponse(1L, URI.create("https://example.com")));
 
@@ -58,7 +58,7 @@ public class UntrackCommandTest extends AbstractCommandTest {
     @Test
     public void testHandleWhenLinkNotTracked() {
         when(mockMessage.text()).thenReturn("/untrack https://github.com/");
-        when(scrapperClient.deleteLink(CHAT_ID, new RemoveLinkRequest(URI.create("https://github.com/"))))
+        when(scrapperClient.deleteLinkRetry(CHAT_ID, new RemoveLinkRequest(URI.create("https://github.com/"))))
             .thenThrow(BotApiBadRequestException.class);
 
         String expectedText = "Данного ресурса нет среди отслеживаемых";

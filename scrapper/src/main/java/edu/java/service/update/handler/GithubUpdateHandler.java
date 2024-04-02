@@ -28,7 +28,7 @@ public class GithubUpdateHandler implements UpdateHandler {
         String url = link.getUrl();
         String[] urlParts = url.split("/");
 
-        GithubResponse response = githubClient.fetchGitHubRepository(
+        GithubResponse response = githubClient.fetchGitHubRepositoryRetry(
             urlParts[usernameIndex], urlParts[repositoryIndex]);
 
         Optional<Update> update = Optional.empty();

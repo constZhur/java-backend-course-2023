@@ -2,7 +2,7 @@ package edu.java.bot.commands;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.client.ScrapperClient;
+import edu.java.bot.client.scrapper.ScrapperClient;
 import edu.java.bot.dto.request.RemoveLinkRequest;
 import edu.java.bot.exception.BotApiBadRequestException;
 import edu.java.bot.exception.BotApiNotFoundException;
@@ -48,7 +48,7 @@ public class UntrackCommand implements Command {
         String link = commandParts[1];
 
         try {
-            client.deleteLink(chatId, new RemoveLinkRequest(URI.create(link)));
+            client.deleteLinkRetry(chatId, new RemoveLinkRequest(URI.create(link)));
             log.info("Обработка команды /untrack для чата: {}. Результат: {}", chatId,
                 LINK_REMOVED_SUCCESSFULLY_MESSAGE);
             return new SendMessage(chatId, LINK_REMOVED_SUCCESSFULLY_MESSAGE);

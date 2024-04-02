@@ -31,7 +31,7 @@ public class LinkUpdaterScheduler {
 
         List<LinkUpdateRequest> updateRequests = updateService.fetchAllUpdates(linksLimit, interval);
         for (var updateRequest : updateRequests) {
-            botClient.sendUpdates(updateRequest);
+            botClient.sendUpdatesRetry(updateRequest);
         }
 
         log.info("Обновление ссылок завершено");
