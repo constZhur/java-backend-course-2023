@@ -52,7 +52,7 @@ public class GithubClientTest {
                     .withBody(expectedJson)
                     .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)));
 
-        GithubResponse response = client.fetchGitHubRepositoryRetry("constZhur", repository);
+        GithubResponse response = client.fetchGitHubRepository("constZhur", repository);
 
         assertThat(response).isNotNull();
         assertThat(response.id()).isEqualTo(755879057L);
@@ -77,7 +77,7 @@ public class GithubClientTest {
                     .withBody(expectedJson)
                     .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)));
 
-        assertThatThrownBy(() -> client.fetchGitHubRepositoryRetry(
+        assertThatThrownBy(() -> client.fetchGitHubRepository(
              "defaultUser", invalidRepository))
             .isInstanceOf(RuntimeException.class)
             .hasMessage("GitHub API Exception");

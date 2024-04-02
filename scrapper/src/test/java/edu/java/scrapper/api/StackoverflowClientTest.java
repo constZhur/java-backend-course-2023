@@ -50,7 +50,7 @@ public class StackoverflowClientTest {
                     .withBody(expectedJson)
                     .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)));
 
-        StackoverflowItemsResponse response = client.fetchStackOverflowQuestionRetry(questionId);
+        StackoverflowItemsResponse response = client.fetchStackOverflowQuestion(questionId);
 
         assertThat(response).isNotNull();
         assertThat(response.items()).hasSize(1);
@@ -80,7 +80,7 @@ public class StackoverflowClientTest {
                     .withBody(expectedJson)
                     .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)));
 
-        assertThatThrownBy(() -> client.fetchStackOverflowQuestionRetry(invalidQuestionId))
+        assertThatThrownBy(() -> client.fetchStackOverflowQuestion(invalidQuestionId))
             .isInstanceOf(RuntimeException.class)
             .hasMessage("StackOverflow API Exception");
     }
