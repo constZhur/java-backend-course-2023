@@ -72,7 +72,7 @@ public class BotClient implements WebClientBot {
     }
 
     @SneakyThrows
-    public HttpStatus sendUpdatesRetry(LinkUpdateRequest linkUpdate) {
-        return retry.executeCallable(() -> sendUpdates(linkUpdate));
+    public void sendUpdatesRetry(LinkUpdateRequest linkUpdate) {
+        retry.executeCallable(() -> sendUpdates(linkUpdate));
     }
 }
