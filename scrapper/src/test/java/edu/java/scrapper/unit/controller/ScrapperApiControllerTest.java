@@ -6,6 +6,7 @@ import edu.java.dto.request.RemoveLinkRequest;
 import edu.java.dto.response.LinkResponse;
 import edu.java.dto.response.ListLinksResponse;
 import edu.java.model.Link;
+import edu.java.model.User;
 import edu.java.service.LinkService;
 import edu.java.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,8 +19,12 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.time.OffsetDateTime;
 import java.util.List;
-import static org.assertj.core.api.Assertions.*;
+import java.util.Optional;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -48,56 +53,67 @@ class ScrapperApiControllerTest {
 
     @Test
     void testDeleteLink() {
-//        RemoveLinkRequest removeLinkRequest = new RemoveLinkRequest(testUrl);
-//        doNothing().when(linkService).remove(testChatId, removeLinkRequest.link());
-//
-//        ResponseEntity<LinkResponse> responseEntity = scrapperController.deleteLink(testChatId, removeLinkRequest);
-//
-//        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-//        verify(linkService, times(1)).remove(testChatId, removeLinkRequest.link());
+        RemoveLinkRequest removeLinkRequest = new RemoveLinkRequest(testUrl);
+        Link linkToDelete = new Link(removeLinkRequest.link());
+
+
+        doNothing().when(linkService).removeUserLink(testChatId, linkToDelete);
+
+        ResponseEntity<LinkResponse> responseEntity = scrapperController.deleteLink(testChatId, removeLinkRequest);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        verify(linkService, times(1)).removeUserLink(eq(testChatId), any(Link.class));
     }
 
     @Test
     void testGetLinks() {
-//        List<Link> mockLinks = List.of(mockLink);
-//        when(linkService.findAll(testChatId)).thenReturn(mockLinks);
-//
-//        ResponseEntity<ListLinksResponse> responseEntity = scrapperController.getLinks(testChatId);
-//
-//        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-//        assertThat(responseEntity.getBody()).isNotNull();
-//        assertThat(responseEntity.getBody().size()).isEqualTo(1);
-//        assertThat(responseEntity.getBody().links()).hasSize(1);
+        List<Link> mockLinks = List.of(mockLink);
+        when(linkService.getAllUserLinks(testChatId)).thenReturn(mockLinks);
+
+        ResponseEntity<ListLinksResponse> responseEntity = scrapperController.getLinks(testChatId);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getBody()).isNotNull();
+        assertThat(responseEntity.getBody().size()).isEqualTo(1);
+        assertThat(responseEntity.getBody().links()).hasSize(1);
     }
 
     @Test
-    void testAddLink() {
-//        AddLinkRequest addLinkRequest = new AddLinkRequest(testUrl);
-//        when(linkService.add(testChatId, addLinkRequest.link())).thenReturn(mockLink);
-//
-//        ResponseEntity<LinkResponse> responseEntity = scrapperController.addLink(testChatId, addLinkRequest);
-//
-//        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-//        assertThat(responseEntity.getBody()).isNotNull();
+    void testAddLink() throws URISyntaxException {
+        AddLinkRequest addLinkRequest = new AddLinkRequest(testUrl);
+        Link newLink = new Link(1, testUrl, OffsetDateTime.now());
+
+        doNothing().when(userService).addLinkForUser(eq(testChatId), any(Link.class)); // Используем any для Link
+        when(linkService.getLinkByUrl(eq(addLinkRequest.link()))).thenReturn(Optional.of(newLink));
+
+        ResponseEntity<LinkResponse> responseEntity = scrapperController.addLink(testChatId, addLinkRequest);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getBody()).isNotNull();
+        assertThat(responseEntity.getBody().id()).isEqualTo(1);
+        assertThat(responseEntity.getBody().url()).isEqualTo(URI.create(testUrl));
+
+        verify(userService, times(1)).addLinkForUser(eq(testChatId), any(Link.class)); // Используем any для Link
+        verify(linkService, times(1)).getLinkByUrl(addLinkRequest.link());
     }
 
     @Test
     void testDeleteChat() {
-//        doNothing().when(userService).unregister(testChatId);
-//
-//        ResponseEntity<Void> responseEntity = scrapperController.deleteChat(testChatId);
-//
-//        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-//        verify(chatService, times(1)).unregister(testChatId);
+        doNothing().when(userService).unregisterUserChat(testChatId);
+
+        ResponseEntity<Void> responseEntity = scrapperController.deleteChat(testChatId);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        verify(userService, times(1)).unregisterUserChat(testChatId);
     }
 
     @Test
     void testAddChat() {
-//        doNothing().when(userService).register(testChatId);
-//
-//        ResponseEntity<Void> responseEntity = scrapperController.addChat(testChatId);
-//
-//        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-//        verify(chatService, times(1)).register(testChatId);
+        doNothing().when(userService).registerUserChat(new User(testChatId));
+
+        ResponseEntity<Void> responseEntity = scrapperController.addChat(testChatId);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        verify(userService, times(1)).registerUserChat(any(User.class));
     }
 }
