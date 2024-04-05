@@ -10,8 +10,8 @@ api:
     increment: 2
     http-codes: INTERNAL_SERVER_ERROR, SERVICE_UNAVAILABLE, BAD_GATEWAY, GATEWAY_TIMEOUT, INSUFFICIENT_STORAGE
   rate-limiter:
-    requests: 100
-    interval: 1
+    requests: 15
+    interval: 30
 
 spring:
   application:
