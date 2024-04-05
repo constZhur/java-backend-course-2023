@@ -4,7 +4,7 @@ import edu.java.clients.dto.stackoverflow.StackoverflowItemsResponse;
 import edu.java.clients.interfaces.WebClientStackoverflow;
 import edu.java.clients.retry.RetryConfigProxy;
 import edu.java.clients.retry.RetryPolicy;
-import edu.java.configuration.RetryConfiguration;
+import edu.java.configuration.retry.RetryConfiguration;
 import io.github.resilience4j.retry.Retry;
 import jakarta.annotation.PostConstruct;
 import java.util.List;

@@ -1,35 +1,43 @@
-package edu.java.scrapper.integration.repository.jdbc;
+package edu.java.scrapper.integration.repository.jooq;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import edu.java.model.User;
-import edu.java.repository.jdbc.JdbcUserRepository;
+import edu.java.repository.jooq.JooqUserRepository;
 import edu.java.scrapper.integration.IntegrationTest;
+import org.jooq.DSLContext;
+import org.jooq.SQLDialect;
+import org.jooq.conf.RenderNameCase;
+import org.jooq.conf.RenderQuotedNames;
+import org.jooq.impl.DSL;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.jooq.JooqTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Transactional
-@SpringBootTest
+@JooqTest
 @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-public class JdbcUserRepositoryTest extends IntegrationTest {
-    private static JdbcUserRepository userRepository;
+public class JooqUserRepositoryTest extends IntegrationTest {
+
+    private static JooqUserRepository userRepository;
 
     private static User user1 = new User(1L, "constZhur", new HashSet<>());
     private static User user2 = new User(2L, "lwbeamer", new HashSet<>());
 
     @BeforeAll
     static void setUp() {
-        userRepository = new JdbcUserRepository(jdbcTemplate);
+        userRepository = new JooqUserRepository(dslContext);
     }
 
     @BeforeEach
-    void beforeEach(){
+    void beforeEach() {
         userRepository.remove(user1.getId());
         userRepository.remove(user2.getId());
     }
@@ -71,4 +79,3 @@ public class JdbcUserRepositoryTest extends IntegrationTest {
             .containsExactlyInAnyOrderElementsOf(List.of(user1.getName(), user2.getName()));
     }
 }
-

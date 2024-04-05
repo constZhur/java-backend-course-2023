@@ -1,4 +1,4 @@
-package edu.java.configuration;
+package edu.java.configuration.dbAccess.jdbc;
 
 import edu.java.repository.LinkRepository;
 import edu.java.repository.UserRepository;

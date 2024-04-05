@@ -1,4 +1,4 @@
-package edu.java.configuration;
+package edu.java.configuration.rateLimiter;
 
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;

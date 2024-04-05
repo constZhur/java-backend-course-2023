@@ -1,5 +1,7 @@
 package edu.java.scrapper.integration;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import liquibase.Contexts;
 import liquibase.LabelExpression;
 import liquibase.Liquibase;
@@ -8,6 +10,11 @@ import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.DirectoryResourceAccessor;
+import org.jooq.DSLContext;
+import org.jooq.SQLDialect;
+import org.jooq.conf.RenderNameCase;
+import org.jooq.conf.RenderQuotedNames;
+import org.jooq.impl.DSL;
 import org.junit.jupiter.api.BeforeAll;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
@@ -29,6 +36,7 @@ public abstract class IntegrationTest {
     public static PostgreSQLContainer<?> POSTGRES;
 
     protected static JdbcTemplate jdbcTemplate;
+    protected static DSLContext dslContext;
 
     static {
         POSTGRES = new PostgreSQLContainer<>("postgres:15")
@@ -46,6 +54,16 @@ public abstract class IntegrationTest {
             .username(POSTGRES.getUsername())
             .password(POSTGRES.getPassword())
             .build());
+
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl(POSTGRES.getJdbcUrl());
+        config.setUsername(POSTGRES.getUsername());
+        config.setPassword(POSTGRES.getPassword());
+        HikariDataSource dataSource = new HikariDataSource(config);
+        dslContext = DSL.using(dataSource, SQLDialect.POSTGRES);
+        dslContext.settings()
+            .withRenderQuotedNames(RenderQuotedNames.ALWAYS)
+            .withRenderNameCase(RenderNameCase.LOWER);
     }
 
     private static void runMigrations(JdbcDatabaseContainer<?> c) {

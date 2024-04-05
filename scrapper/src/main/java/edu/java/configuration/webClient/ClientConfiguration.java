@@ -1,4 +1,4 @@
-package edu.java.configuration;
+package edu.java.configuration.webClient;
 
 import edu.java.clients.impl.BotClient;
 import edu.java.clients.impl.GithubClient;

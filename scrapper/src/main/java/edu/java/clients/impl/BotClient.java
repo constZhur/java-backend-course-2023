@@ -4,7 +4,7 @@ import edu.java.clients.dto.BotApiErrorResponse;
 import edu.java.clients.interfaces.WebClientBot;
 import edu.java.clients.retry.RetryConfigProxy;
 import edu.java.clients.retry.RetryPolicy;
-import edu.java.configuration.RetryConfiguration;
+import edu.java.configuration.retry.RetryConfiguration;
 import edu.java.dto.request.LinkUpdateRequest;
 import io.github.resilience4j.retry.Retry;
 import jakarta.annotation.PostConstruct;
