@@ -1,6 +1,7 @@
 package edu.java.clients.impl;
 
 import edu.java.clients.dto.BotApiErrorResponse;
+import edu.java.clients.interfaces.UpdateSender;
 import edu.java.clients.interfaces.WebClientBot;
 import edu.java.clients.retry.RetryConfigProxy;
 import edu.java.clients.retry.RetryPolicy;
@@ -17,7 +18,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-public class BotClient implements WebClientBot {
+public class BotClient implements WebClientBot, UpdateSender {
     @Value("${api.bot.url}")
     private String url;
     private final WebClient webClient;
@@ -72,7 +73,8 @@ public class BotClient implements WebClientBot {
     }
 
     @SneakyThrows
-    public void sendUpdatesRetry(LinkUpdateRequest linkUpdate) {
-        retry.executeCallable(() -> sendUpdates(linkUpdate));
+    @Override
+    public void send(LinkUpdateRequest update) {
+        retry.executeCallable(() -> sendUpdates(update));
     }
 }

@@ -4,6 +4,7 @@ import edu.java.clients.impl.BotClient;
 import edu.java.clients.impl.GithubClient;
 import edu.java.clients.impl.StackoverflowClient;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -30,6 +31,7 @@ public class ClientConfiguration {
     }
 
     @Bean
+    @ConditionalOnProperty(prefix = "app", name = "use-queue", havingValue = "false")
     public BotClient botClient() {
         return new BotClient(botApiUrl);
     }

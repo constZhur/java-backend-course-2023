@@ -1,5 +1,15 @@
 app:
   telegram-token: ${TELEGRAM_BOT_TOKEN}
+  kafka-properties:
+    bootstrap-servers: localhost:9092
+    kafka-producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    kafka-consumer:
+      group-id: update-messages
+      mappings: edu.java.dto.request.LinkUpdateRequest:edu.java.bot.dto.request.LinkUpdateRequest
+    topic-name: bot-updates
+    dlq-topic-name: bot-updates_dlq
 
 api:
   scrapper:

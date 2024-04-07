@@ -1,5 +1,6 @@
 package edu.java.configuration;
 
+import edu.java.kafka.KafkaProperties;
 import edu.java.schedule.Scheduler;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -10,5 +11,7 @@ import org.springframework.validation.annotation.Validated;
 @ConfigurationProperties(prefix = "app", ignoreUnknownFields = false)
 public record ApplicationConfig(
     @NotNull @Bean Scheduler scheduler,
-    @NotNull String databaseAccessType
+    @NotNull String databaseAccessType,
+    @NotNull @Bean KafkaProperties kafkaProperties,
+    @NotNull boolean useQueue
 ) { }
