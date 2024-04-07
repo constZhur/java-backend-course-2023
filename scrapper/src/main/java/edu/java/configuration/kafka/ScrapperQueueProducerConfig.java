@@ -1,7 +1,7 @@
 package edu.java.configuration.kafka;
 
-import edu.java.dto.request.LinkUpdateRequest;
 import edu.java.clients.impl.ScrapperQueueProducer;
+import edu.java.dto.request.LinkUpdateRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
