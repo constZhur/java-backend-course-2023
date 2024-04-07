@@ -54,6 +54,23 @@ public class ScrapperClient implements WebScrapperClient {
         this.webClient = WebClient.builder().baseUrl(this.url).build();
     }
 
+    public ScrapperClient(
+        @URL String url,
+        RetryPolicy retryPolicy,
+        Integer maxRetries,
+        Long retryDelay,
+        Integer increment,
+        List<HttpStatus> httpCodes) {
+        this.url = url;
+        this.webClient = WebClient.builder().baseUrl(this.url).build();
+        this.retryPolicy = retryPolicy;
+        this.maxRetries = maxRetries;
+        this.retryDelay = retryDelay;
+        this.increment = increment;
+        this.httpCodes = httpCodes;
+        startRetry();
+    }
+
     @PostConstruct
     private void startRetry() {
         RetryConfigProxy proxy = RetryConfigProxy.builder()
