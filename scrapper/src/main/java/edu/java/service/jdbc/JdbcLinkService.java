@@ -9,13 +9,12 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
-@Service
 @RequiredArgsConstructor
 public class JdbcLinkService implements LinkService {
     private final JdbcLinkRepository linkRepository;
     private final JdbcUserService userService;
+
 
     @Override
     public void addLink(Link link) {
@@ -23,7 +22,7 @@ public class JdbcLinkService implements LinkService {
     }
 
     @Override
-    public Optional<Link> getLinkById(Long id) {
+    public Optional<Link> getLinkById(Integer id) {
         Optional<Link> foundLink = linkRepository.findById(id);
 
         if (foundLink.isEmpty()) {
@@ -64,7 +63,7 @@ public class JdbcLinkService implements LinkService {
     }
 
     @Override
-    public void removeLink(Long id) {
+    public void removeLink(Integer id) {
         Optional<Link> foundLink = linkRepository.findById(id);
         if (foundLink.isEmpty()) {
             throw new LinkNotFoundException("Link with id " + id + " not found");

@@ -1,12 +1,11 @@
 package edu.java.scrapper.integration.repository.jdbc;
 
-import edu.java.model.Link;
 import edu.java.model.User;
-import edu.java.repository.jdbc.JdbcLinkRepository;
 import edu.java.repository.jdbc.JdbcUserRepository;
 import edu.java.scrapper.integration.IntegrationTest;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,11 +18,21 @@ import static org.assertj.core.api.Assertions.*;
 @SpringBootTest
 @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
 public class JdbcUserRepositoryTest extends IntegrationTest {
-    @Autowired
-    JdbcUserRepository userRepository;
+    private static JdbcUserRepository userRepository;
 
     private static User user1 = new User(1L, "constZhur", new HashSet<>());
     private static User user2 = new User(2L, "lwbeamer", new HashSet<>());
+
+    @BeforeAll
+    static void setUp(){
+        userRepository = new JdbcUserRepository(jdbcTemplate);
+    }
+
+    @BeforeEach
+    void beforeEach(){
+        userRepository.remove(user1.getId());
+        userRepository.remove(user2.getId());
+    }
 
     @Test
     void addUserTest() {
@@ -53,7 +62,7 @@ public class JdbcUserRepositoryTest extends IntegrationTest {
     }
 
     @Test
-    void findAllUsersTest() {
+    void findAllUsersTest() {;
         userRepository.add(user1);
         userRepository.add(user2);
         List<User> allUsers = userRepository.findAll();

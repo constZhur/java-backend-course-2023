@@ -1,4 +1,4 @@
-package edu.java.scrapper.unit.service;
+package edu.java.scrapper.unit.service.jdbc;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -39,7 +39,7 @@ class JdbcLinkServiceTest {
 
     @BeforeEach
     void setUp() {
-        link = new Link(1L, "https://example.com", OffsetDateTime.now());
+        link = new Link(1, "https://example.com", OffsetDateTime.now());
     }
 
     @Test
@@ -54,7 +54,7 @@ class JdbcLinkServiceTest {
     @Test
     void getLinkById_WhenLinkExists_ShouldReturnLink() {
         // Given
-        Long linkId = 1L;
+        Integer linkId = 1;
         when(linkRepository.findById(linkId)).thenReturn(Optional.of(link));
 
         // When
@@ -68,7 +68,7 @@ class JdbcLinkServiceTest {
     @Test
     void getLinkById_WhenLinkDoesNotExist_ShouldThrowException() {
         // Given
-        Long linkId = 1L;
+        Integer linkId = 1;
         when(linkRepository.findById(linkId)).thenReturn(Optional.empty());
 
         // When, Then
@@ -107,8 +107,8 @@ class JdbcLinkServiceTest {
     void getAllLinks_ShouldReturnAllLinks() {
         // Given
         List<Link> expectedLinks = Arrays.asList(
-            new Link(1L, "https://example1.com", OffsetDateTime.now()),
-            new Link(2L, "https://example2.com", OffsetDateTime.now())
+            new Link(1, "https://example1.com", OffsetDateTime.now()),
+            new Link(2, "https://example2.com", OffsetDateTime.now())
         );
         when(linkRepository.findAll()).thenReturn(expectedLinks);
 
@@ -139,7 +139,7 @@ class JdbcLinkServiceTest {
     void getAllUserLinks_WhenUserChatDoesNotExist_ShouldThrowException() {
         // Given
         Long userId = 1L;
-        when(userService.checkThatUserChatExists(userId)).thenReturn(false); // Предположим, что пользователя не существует
+        when(userService.checkThatUserChatExists(userId)).thenReturn(false);
 
         // When, Then
         assertThrows(ChatNotFoundException.class, () -> linkService.getAllUserLinks(userId));
@@ -163,7 +163,7 @@ class JdbcLinkServiceTest {
     @Test
     void removeLink_WhenLinkExists_ShouldRemoveLink() throws LinkNotFoundException {
         // Given
-        Long linkId = 1L;
+        Integer linkId = 1;
         when(linkRepository.findById(linkId)).thenReturn(Optional.of(new Link(linkId, "https://example.com", OffsetDateTime.now())));
 
         // When
@@ -176,7 +176,7 @@ class JdbcLinkServiceTest {
     @Test
     void removeLink_WhenLinkDoesNotExist_ShouldThrowException() {
         // Given
-        Long linkId = 1L;
+        Integer linkId = 1;
         when(linkRepository.findById(linkId)).thenReturn(Optional.empty());
 
         // When, Then
@@ -187,9 +187,9 @@ class JdbcLinkServiceTest {
     void removeUserLink_WhenUserChatExistsAndLinkExistsForUser_ShouldRemoveUserLink() throws ChatNotFoundException, LinkNotFoundException {
         // Given
         Long userId = 1L;
-        Link userLink = new Link(1L, "https://example.com", OffsetDateTime.now());
-        when(userService.checkThatUserChatExists(userId)).thenReturn(true); // Предположим, что пользователь существует
-        when(linkRepository.findUserLinkByUrl(userId, userLink.getUrl())).thenReturn(Optional.of(userLink)); // Предположим, что ссылка пользователя существует
+        Link userLink = new Link(1, "https://example.com", OffsetDateTime.now());
+        when(userService.checkThatUserChatExists(userId)).thenReturn(true);
+        when(linkRepository.findUserLinkByUrl(userId, userLink.getUrl())).thenReturn(Optional.of(userLink));
 
         // When
         linkService.removeUserLink(userId, userLink);
@@ -202,7 +202,7 @@ class JdbcLinkServiceTest {
     void removeUserLink_WhenUserChatDoesNotExist_ShouldThrowException() {
         // Given
         Long userId = 1L;
-        Link userLink = new Link(1L, "https://example.com", OffsetDateTime.now());
+        Link userLink = new Link(1, "https://example.com", OffsetDateTime.now());
         when(userService.checkThatUserChatExists(userId)).thenReturn(false);
 
         // When, Then
@@ -212,7 +212,7 @@ class JdbcLinkServiceTest {
     @Test
     void updateLinkCheckedTime_ShouldUpdateCheckedTime() {
         // Given
-        Link linkToUpdate = new Link(1L, "https://example.com", OffsetDateTime.now());
+        Link linkToUpdate = new Link(1, "https://example.com", OffsetDateTime.now());
         OffsetDateTime newUpdateTime = OffsetDateTime.now().plusHours(1);
 
         // When

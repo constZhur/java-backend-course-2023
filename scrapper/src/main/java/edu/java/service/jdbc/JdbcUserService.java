@@ -10,13 +10,13 @@ import edu.java.service.UserService;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
-@Service
 @RequiredArgsConstructor
 public class JdbcUserService implements UserService {
+
     private final JdbcUserRepository userRepository;
     private final JdbcLinkRepository linkRepository;
+
 
     @Override
     public void registerUserChat(User user) {
@@ -50,7 +50,7 @@ public class JdbcUserService implements UserService {
     }
 
     @Override
-    public List<Long> getAllUserChatIdsByLinkId(Long linkId) {
+    public List<Long> getAllUserChatIdsByLinkId(Integer linkId) {
         return userRepository.getAllUserChatIdsByLinkId(linkId);
     }
 
@@ -63,7 +63,7 @@ public class JdbcUserService implements UserService {
         Optional<User> foundUser = userRepository.findById(userId);
         if (foundUser.isPresent()) {
             Optional<Link> foundLink = linkRepository.findByUrl(link.getUrl());
-            Long linkId;
+            Integer linkId;
             if (foundLink.isEmpty()) {
                 linkRepository.add(link);
                 linkId = link.getId();

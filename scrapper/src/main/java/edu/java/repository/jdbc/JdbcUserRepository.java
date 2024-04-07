@@ -7,10 +7,8 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-@Component
 @RequiredArgsConstructor
 public class JdbcUserRepository implements UserRepository {
     private final JdbcTemplate jdbcTemplate;
@@ -22,7 +20,7 @@ public class JdbcUserRepository implements UserRepository {
     }
 
     @Override
-    public void addLinkForUser(Long userId, Long linkId) {
+    public void addLinkForUser(Long userId, Integer linkId) {
         jdbcTemplate.update("INSERT INTO link_chat_relations (chat_id, link_id) VALUES (?, ?)", userId, linkId);
     }
 
@@ -46,7 +44,7 @@ public class JdbcUserRepository implements UserRepository {
     }
 
     @Override
-    public List<Long> getAllUserChatIdsByLinkId(Long linkId) {
+    public List<Long> getAllUserChatIdsByLinkId(Integer linkId) {
         return jdbcTemplate.queryForList(
             "SELECT chat_id FROM link_chat_relations WHERE link_id = ?", Long.class, linkId
         );

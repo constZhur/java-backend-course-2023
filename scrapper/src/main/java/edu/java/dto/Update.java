@@ -6,7 +6,7 @@ import java.time.OffsetDateTime;
 
 public record Update(
     @NotNull
-    Long linkId,
+    Integer linkId,
 
     @NotBlank
     String url,

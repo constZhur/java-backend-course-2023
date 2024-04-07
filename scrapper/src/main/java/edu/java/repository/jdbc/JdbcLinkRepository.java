@@ -11,10 +11,8 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-@Component
 @RequiredArgsConstructor
 public class JdbcLinkRepository implements LinkRepository {
     private final JdbcTemplate jdbcTemplate;
@@ -25,7 +23,7 @@ public class JdbcLinkRepository implements LinkRepository {
     }
 
     @Override
-    public Optional<Link> findById(Long id) {
+    public Optional<Link> findById(Integer id) {
         List<Link> links = jdbcTemplate.query("SELECT * FROM link WHERE id = ?", this::mapLink, id);
         return links.isEmpty() ? Optional.empty() : Optional.of(links.get(0));
     }
@@ -60,13 +58,17 @@ public class JdbcLinkRepository implements LinkRepository {
 
     @Override
     public List<Link> findOutdatedLinks(Long linksLimit, Long timeInterval) {
-        String sql = "SELECT * FROM link WHERE checked_at < NOW() - INTERVAL '" + timeInterval + " SECOND' LIMIT ?";
-        return jdbcTemplate.query(sql, new Object[]{linksLimit}, new BeanPropertyRowMapper<>(Link.class));
+        return jdbcTemplate.query("""
+                    SELECT * FROM Link WHERE EXTRACT(EPOCH FROM (CURRENT_TIMESTAMP - checked_at)) >= ?
+                    LIMIT ?
+                    """,
+            new BeanPropertyRowMapper<>(Link.class), timeInterval, linksLimit
+        );
     }
 
     @Override
     @Transactional
-    public void remove(Long id) {
+    public void remove(Integer id) {
         jdbcTemplate.update("DELETE FROM link WHERE id = ?", id);
         jdbcTemplate.update("DELETE FROM link_chat_relations WHERE link_id = ?", id);
     }
@@ -87,7 +89,7 @@ public class JdbcLinkRepository implements LinkRepository {
 
     private Link mapLink(ResultSet rs, int rowNum) throws SQLException {
         Link link = new Link();
-        link.setId(rs.getLong("id"));
+        link.setId(rs.getInt("id"));
         link.setUrl(rs.getString("url"));
         link.setCheckedAt(rs.getTimestamp("checked_at").toInstant().atOffset(ZoneOffset.UTC));
         return link;

@@ -12,8 +12,8 @@ public interface WebScrapperClient {
 
     LinkResponse deleteLink(Long tgChatId, RemoveLinkRequest removeLinkRequest);
 
-    void registerChat(Long id);
+    void registerChat(Long chatId);
 
-    void deleteChat(Long id);
+    void deleteChat(Long chatId);
 
 }

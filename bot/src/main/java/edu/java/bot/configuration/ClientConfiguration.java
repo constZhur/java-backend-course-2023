@@ -12,7 +12,7 @@ public class ClientConfiguration {
     private String scrapperApiUrl;
 
     @Bean
-    public ScrapperClient githubClient() {
+    public ScrapperClient scrapperClient() {
         return new ScrapperClient(scrapperApiUrl);
     }
 }

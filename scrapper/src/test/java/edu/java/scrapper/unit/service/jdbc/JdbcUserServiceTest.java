@@ -1,4 +1,4 @@
-package edu.java.scrapper.unit.service;
+package edu.java.scrapper.unit.service.jdbc;
 
 import edu.java.exception.ChatNotFoundException;
 import edu.java.exception.RegisteredUserExistsException;
@@ -100,7 +100,7 @@ public class JdbcUserServiceTest {
     @Test
     void getAllUserChatIdsByLinkId_ShouldReturnListOfIds() {
         // Given
-        Long linkId = 1L;
+        Integer linkId = 1;
         List<Long> expectedChatIds = List.of(1L, 2L, 3L);
         when(userRepository.getAllUserChatIdsByLinkId(linkId)).thenReturn(expectedChatIds);
 
@@ -115,7 +115,7 @@ public class JdbcUserServiceTest {
     void addLinkForUser_WhenUserChatExistsAndLinkExists_ShouldAddLinkForUser() {
         // Given
         Long userId = 1L;
-        Link existingLink = new Link(1L, "https://example.com", OffsetDateTime.now());
+        Link existingLink = new Link(1, "https://example.com", OffsetDateTime.now());
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(new User(userId, new HashSet<>())));
         when(linkRepository.findByUrl(existingLink.getUrl())).thenReturn(Optional.of(existingLink));
@@ -131,7 +131,7 @@ public class JdbcUserServiceTest {
     void addLinkForUser_WhenUserChatExistsAndLinkDoesNotExist_ShouldAddLinkForUser() {
         // Given
         Long userId = 1L;
-        Link newLink = new Link(1L, "https://example.com", OffsetDateTime.now());
+        Link newLink = new Link(1, "https://example.com", OffsetDateTime.now());
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(new User(userId, new HashSet<>())));
         when(linkRepository.findByUrl(newLink.getUrl())).thenReturn(Optional.empty());
@@ -141,14 +141,14 @@ public class JdbcUserServiceTest {
         userService.addLinkForUser(userId, newLink);
 
         // Then
-        verify(userRepository).addLinkForUser(userId, 1L);
+        verify(userRepository).addLinkForUser(userId, 1);
     }
 
     @Test
     void addLinkForUser_WhenUserChatDoesNotExist_ShouldThrowChatNotFoundException() {
         // Given
         Long userId = 1L;
-        Link newLink = new Link(1L, "https://example.com", OffsetDateTime.now());
+        Link newLink = new Link(1, "https://example.com", OffsetDateTime.now());
 
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 

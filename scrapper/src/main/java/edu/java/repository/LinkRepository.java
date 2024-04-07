@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface LinkRepository {
     void add(Link link);
 
-    Optional<Link> findById(Long id);
+    Optional<Link> findById(Integer id);
 
     Optional<Link> findByUrl(String url);
 
@@ -20,7 +20,7 @@ public interface LinkRepository {
 
     List<Link> findOutdatedLinks(Long linksLimit, Long timeInterval);
 
-    void remove(Long id);
+    void remove(Integer id);
 
     void removeUserLink(Long userId, Link link);
 

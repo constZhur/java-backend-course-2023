@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @Validated
-public class BotUpdateController {
+public class BotApiController {
     private final UpdateService updateService;
 
     @Operation(
@@ -33,7 +33,7 @@ public class BotUpdateController {
     )
     @PostMapping("/updates")
     public ResponseEntity<Void> updatesPost(@RequestBody @Valid LinkUpdateRequest linkUpdate) {
-        updateService.addUpdate(linkUpdate);
+        updateService.processUpdate(linkUpdate);
         return ResponseEntity.ok().build();
     }
 }

@@ -5,7 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.junit.jupiter.api.Assertions;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
 public class HelpCommandTest extends AbstractCommandTest {
@@ -20,13 +20,12 @@ public class HelpCommandTest extends AbstractCommandTest {
 
     @Test
     public void testCommand() {
-        Assertions.assertEquals("/help", helpCommand.command());
+        assertThat(helpCommand.command()).isEqualTo("/help");
     }
 
     @Test
     public void testDescription(){
-        Assertions.assertEquals("Показать рекомендации по использованию бота",
-            helpCommand.description());
+        assertThat(helpCommand.description()).isEqualTo("Показать рекомендации по использованию бота");
     }
 
     @Test

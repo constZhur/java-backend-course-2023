@@ -12,9 +12,14 @@ import edu.java.model.User;
 import edu.java.repository.jdbc.JdbcLinkRepository;
 import edu.java.repository.jdbc.JdbcUserRepository;
 import edu.java.scrapper.integration.IntegrationTest;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Bean;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,26 +28,42 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
 public class JdbcLinkRepositoryTest extends IntegrationTest {
-    @Autowired
-    private JdbcLinkRepository linkRepository;
-    @Autowired
-    private JdbcUserRepository userRepository;
+    private static JdbcLinkRepository linkRepository;
+    private static JdbcUserRepository userRepository;
 
     private static User user1 = new User(1L, "constZhur", new HashSet<>());
     private static User user2 = new User(2L, "lwbeamer", new HashSet<>());
 
-    private static Link link1 = new Link(1L,
+    private static Link link1 = new Link(1,
         "https://github.com/lwbeamer/clound-project",
         OffsetDateTime.of(2024, 3, 20, 21, 0, 0, 0, ZoneOffset.UTC));
-    private static Link link2 = new Link(2L,
+    private static Link link2 = new Link(2,
         "https://stackoverflow.com/questions/46125417/how-to-mock-a-service-using-wiremock",
         OffsetDateTime.of(2024, 3, 20, 21, 0, 0, 0, ZoneOffset.UTC));
-    private static Link link3 = new Link(3L,
+    private static Link link3 = new Link(3,
         "https://github.com/constZhur/java-backend-course-2023",
         OffsetDateTime.of(2024, 3, 20, 21, 0, 0, 0, ZoneOffset.UTC));
 
+    @BeforeAll
+    public static void setUp(){
+        linkRepository = new JdbcLinkRepository(jdbcTemplate);
+        userRepository = new JdbcUserRepository(jdbcTemplate);
+    }
+
+    @BeforeEach
+    void beforeEach(){
+        userRepository.remove(user1.getId());
+        userRepository.remove(user2.getId());
+
+        linkRepository.remove(link1.getId());
+        linkRepository.remove(link2.getId());
+        linkRepository.remove(link3.getId());
+    }
+
+
     @Test
     public void testAdd() {
+        linkRepository.remove(link1.getId());
         linkRepository.add(link1);
 
         List<Link> links = linkRepository.findAll();
@@ -54,6 +75,9 @@ public class JdbcLinkRepositoryTest extends IntegrationTest {
 
     @Test
     public void testAddLinkForUser() {
+        linkRepository.remove(link1.getId());
+        userRepository.remove(user1.getId());
+
         linkRepository.add(link1);
         userRepository.add(user1);
 
@@ -67,6 +91,8 @@ public class JdbcLinkRepositoryTest extends IntegrationTest {
 
     @Test
     public void testFindById() {
+        linkRepository.remove(link2.getId());
+
         linkRepository.add(link2);
 
         Optional<Link> foundLink = linkRepository.findById(link2.getId());
@@ -77,6 +103,8 @@ public class JdbcLinkRepositoryTest extends IntegrationTest {
 
     @Test
     public void testFindLinkByUrl() {
+        linkRepository.remove(link1.getId());
+
         linkRepository.add(link1);
 
         Optional<Link> foundLink = linkRepository.findByUrl(link1.getUrl());
@@ -87,6 +115,11 @@ public class JdbcLinkRepositoryTest extends IntegrationTest {
 
     @Test
     public void testFindAll() {
+        linkRepository.remove(link1.getId());
+        linkRepository.remove(link2.getId());
+        linkRepository.remove(link3.getId());
+
+
         linkRepository.add(link1);
         linkRepository.add(link2);
         linkRepository.add(link3);

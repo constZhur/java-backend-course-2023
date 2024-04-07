@@ -11,7 +11,7 @@ public interface UserService {
 
     boolean checkThatUserChatExists(Long id);
 
-    List<Long> getAllUserChatIdsByLinkId(Long linkId);
+    List<Long> getAllUserChatIdsByLinkId(Integer linkId);
 
     void addLinkForUser(Long userId, Link link);
 }

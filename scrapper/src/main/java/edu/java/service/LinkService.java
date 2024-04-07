@@ -9,9 +9,7 @@ public interface LinkService {
 
     void addLink(Link link);
 
-    //void addLinkForUser(Long userId, Link link);
-
-    Optional<Link> getLinkById(Long id);
+    Optional<Link> getLinkById(Integer id);
 
     Optional<Link> getLinkByUrl(String url);
 
@@ -21,7 +19,7 @@ public interface LinkService {
 
     List<Link> getOutdatedLinks(Long linksLimit, Long timeInterval);
 
-    void removeLink(Long id);
+    void removeLink(Integer id);
 
     void removeUserLink(Long userId, Link link);
 

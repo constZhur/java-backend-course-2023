@@ -5,8 +5,10 @@ import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.commands.Command;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @RequiredArgsConstructor
 @Component
 public class UserMessageProcessorImpl implements UserMessageProcessor {
@@ -20,6 +22,8 @@ public class UserMessageProcessorImpl implements UserMessageProcessor {
     private static final String UNSUPPORTED_COMMAND_MESSAGE =
         "Такая команда не поддерживается ботом\n"
         + HELP_COMMAND_MESSAGE;
+    private static final String ERROR_MESSAGE =
+        "Возникла ошибка, попробуйте перезапустить телеграмм бота";
 
 
     @Override
@@ -29,16 +33,21 @@ public class UserMessageProcessorImpl implements UserMessageProcessor {
 
     @Override
     public SendMessage process(Update update) {
-        long chatId = update.message().chat().id();
+        Long chatId = update.message().chat().id();
 
         if (isNotText(update)) {
             return new SendMessage(chatId, ONLY_TEXT_COMMANDS_SUPPORTED_MESSAGE);
         }
 
-        for (Command command : commands) {
-            if (command.supports(update)) {
-                return command.handle(update);
+        try {
+            for (Command command : commands) {
+                if (command.supports(update)) {
+                    return command.handle(update);
+                }
             }
+        } catch (Exception e) {
+            log.error("Возникла ошибка в течение выполнения обработки комманды", e);
+            return new SendMessage(chatId, ERROR_MESSAGE);
         }
 
         return new SendMessage(chatId, UNSUPPORTED_COMMAND_MESSAGE);

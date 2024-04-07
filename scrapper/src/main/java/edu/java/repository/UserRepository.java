@@ -8,7 +8,7 @@ public interface UserRepository {
 
     void add(User userChat);
 
-    void addLinkForUser(Long userId, Long linkId);
+    void addLinkForUser(Long userId, Integer linkId);
 
     Optional<User> findById(Long id);
 
@@ -16,5 +16,5 @@ public interface UserRepository {
 
     List<User> findAll();
 
-    List<Long> getAllUserChatIdsByLinkId(Long linkId);
+    List<Long> getAllUserChatIdsByLinkId(Integer linkId);
 }

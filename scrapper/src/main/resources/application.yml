@@ -3,6 +3,7 @@ app:
     enable: true
     interval: 10s
     force-check-delay: 10s
+  database-access-type: jdbc
 
 api:
   github:
@@ -12,8 +13,8 @@ api:
   bot:
     url: http://localhost:8090
   link-updater:
-    interval: 10000
-    limit:  100
+    interval: 1000
+    limit: 100
 
 
 spring:
@@ -23,6 +24,10 @@ spring:
     url: jdbc:postgresql://localhost:5432/scrapper
     username: postgres
     password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
   liquibase:
     enabled: false
 
