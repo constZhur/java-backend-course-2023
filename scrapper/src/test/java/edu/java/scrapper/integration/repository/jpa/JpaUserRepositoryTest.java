@@ -40,9 +40,9 @@ public class JpaUserRepositoryTest extends IntegrationTest {
             "https://github.com/lwbeamer/clound-project",
             OffsetDateTime.of(2024, 3, 20, 21, 0, 0, 0, ZoneOffset.UTC));
 
-        user1 = new User(1L, "constZhur", new HashSet<>());
-        user2 = new User(2L, "lwbeamer", new HashSet<>());
-        user3 = new User(3L, "random_user", new HashSet<>());;
+        user1 = new User(1L, new HashSet<>());
+        user2 = new User(2L, new HashSet<>());
+        user3 = new User(3L, new HashSet<>());;
     }
 
     @BeforeEach

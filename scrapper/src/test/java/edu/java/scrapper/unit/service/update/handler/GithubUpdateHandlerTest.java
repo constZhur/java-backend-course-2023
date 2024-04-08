@@ -35,7 +35,7 @@ public class GithubUpdateHandlerTest {
 
     @Test
     void testFetchUpdate() {
-        String testUrl = "/github.com/constZhur/java-backend-course-2023";
+        String testUrl = "https://github.com/constZhur/java-backend-course-2023";
         String repoOwner = "constZhur";
         String repoName = "java-backend-course-2023";
         Link link = new Link(1, testUrl,

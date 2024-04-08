@@ -9,10 +9,12 @@ import io.github.resilience4j.retry.Retry;
 import jakarta.annotation.PostConstruct;
 import java.util.List;
 import lombok.SneakyThrows;
+import org.hibernate.validator.constraints.URL;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 public class GithubClient implements WebClientGithub {
@@ -43,6 +45,23 @@ public class GithubClient implements WebClientGithub {
         this.webClient = WebClient.builder().baseUrl(this.githubBaseUrl).build();
     }
 
+    public GithubClient(
+        @URL String url,
+        RetryPolicy retryPolicy,
+        Integer maxRetries,
+        Long retryDelay,
+        Integer increment,
+        List<HttpStatus> httpCodes) {
+        this.githubBaseUrl = url;
+        this.webClient = WebClient.builder().baseUrl(this.githubBaseUrl).build();
+        this.retryPolicy = retryPolicy;
+        this.maxRetries = maxRetries;
+        this.retryDelay = retryDelay;
+        this.increment = increment;
+        this.httpCodes = httpCodes;
+        startRetry();
+    }
+
     @PostConstruct
     private void startRetry() {
         RetryConfigProxy proxy = RetryConfigProxy.builder()
@@ -61,7 +80,10 @@ public class GithubClient implements WebClientGithub {
             .uri("/repos/{user}/{repo}", owner, repository)
             .retrieve()
             .onStatus(HttpStatusCode::isError, clientResponse -> clientResponse.bodyToMono(RuntimeException.class)
-                .flatMap(error -> Mono.error(new RuntimeException("GitHub API Exception"))))
+                .flatMap(error -> Mono.error(
+                    new WebClientResponseException("GitHub API Exception",
+                        HttpStatus.NOT_FOUND.value(), "Not Found", null, null, null)
+                )))
             .bodyToMono(GithubResponse.class)
             .block();
     }

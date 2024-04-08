@@ -1,9 +1,9 @@
 app:
   scheduler:
     enable: true
-    interval: 10s
-    force-check-delay: 10s
-  database-access-type: jdbc
+    interval: 30s
+    force-check-delay: 30s
+  database-access-type: jpa
   kafka-properties:
     bootstrap-servers: localhost:9092
     kafka-producer:
@@ -36,7 +36,7 @@ api:
     increment: 2
     http-codes: INTERNAL_SERVER_ERROR, SERVICE_UNAVAILABLE, BAD_GATEWAY, GATEWAY_TIMEOUT, INSUFFICIENT_STORAGE
   link-updater:
-    interval: 1000
+    interval: 10
     limit: 100
   rate-limiter:
     requests: 15
