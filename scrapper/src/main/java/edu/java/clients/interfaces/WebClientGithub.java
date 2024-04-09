@@ -1,7 +1,8 @@
 package edu.java.clients.interfaces;
 
-import edu.java.clients.dto.github.GithubResponse;
+import edu.java.dto.response.EventResponse;
+import java.util.List;
 
 public interface WebClientGithub {
-    GithubResponse fetchGitHubRepository(String owner, String repository);
+    List<EventResponse> fetchGithubRepositoryEvents(String owner, String repository);
 }

@@ -17,7 +17,6 @@ public class JooqUserRepository implements UserRepository {
     public void add(User userChat) {
         dslContext.insertInto(USER_CHAT)
             .set(USER_CHAT.ID, userChat.getId())
-            .set(USER_CHAT.NAME, userChat.getName())
             .execute();
     }
 

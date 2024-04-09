@@ -13,6 +13,12 @@ public class ClientConfiguration {
     @Value("${api.github.url}")
     private String githubApiUrl;
 
+    @Value("${api.github.access-token}")
+    private String githubAccessToken;
+
+    @Value("${api.github.events-count}")
+    private Integer eventsCount;
+
     @Value("${api.stackoverflow.url}")
     private String stackoverflowApiUrl;
 
@@ -21,7 +27,7 @@ public class ClientConfiguration {
 
     @Bean
     public GithubClient githubClient() {
-        return new GithubClient(githubApiUrl);
+        return new GithubClient(githubApiUrl, githubAccessToken, eventsCount);
     }
 
     @Bean

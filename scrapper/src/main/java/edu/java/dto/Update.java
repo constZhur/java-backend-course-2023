@@ -12,8 +12,5 @@ public record Update(
     String url,
 
     @NotBlank
-    String description,
-
-    @NotNull
-    OffsetDateTime updateTime
+    String description
 ) { }

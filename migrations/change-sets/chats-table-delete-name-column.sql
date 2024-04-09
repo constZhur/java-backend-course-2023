@@ -1,0 +1,1 @@
+ALTER TABLE user_chat DROP COLUMN IF EXISTS name;

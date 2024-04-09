@@ -10,4 +10,5 @@
     <include file="change-sets/create-chats-table.sql"/>
     <include file="change-sets/create-links-table.sql"/>
     <include file="change-sets/create-link-chat-relations-table.sql"/>
+    <include file="change-sets/chats-table-delete-name-column.sql"/>
 </databaseChangeLog>

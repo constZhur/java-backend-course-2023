@@ -14,7 +14,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
 @Entity
@@ -22,9 +21,6 @@ import lombok.Setter;
 public class User {
     @Id
     private Long id;
-
-    @Column(name = "name")
-    private String name;
 
     @ManyToMany
     @JoinTable(
