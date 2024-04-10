@@ -28,14 +28,34 @@ spring:
     name: bot
   jackson:
     time-zone: UTC
-
 server:
   port: 8090
-
 logging:
   config: classpath:log4j2-plain.xml
-
 springdoc:
   swagger-ui:
     path: /swagger-ui
 
+management:
+  server:
+    port: 8890
+  endpoints:
+    web:
+      base-path: /
+      path-mapping:
+        prometheus: /metrics
+      exposure:
+        include: info, health, prometheus
+  endpoint:
+    metrics:
+      enabled: true
+    health:
+      enabled: true
+    info:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+    distribution:
+      percentiles-histogram:
+        "[http.server.requests]": true

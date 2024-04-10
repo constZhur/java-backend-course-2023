@@ -9,6 +9,7 @@ import edu.java.model.Link;
 import edu.java.model.User;
 import edu.java.service.LinkService;
 import edu.java.service.UserService;
+import io.micrometer.core.annotation.Counted;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -38,6 +39,7 @@ public class ScrapperApiController {
     private final LinkService linkService;
     private final UserService userService;
 
+    @Counted(value = "api_counter", description = "Number of request to API")
     @Operation(
         summary = "Убрать отслеживание ссылки",
         responses = {
@@ -64,6 +66,7 @@ public class ScrapperApiController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @Counted(value = "api_counter", description = "Number of request to API")
     @Operation(
         summary = "Получить все отслеживаемые ссылки",
         responses = {
@@ -96,6 +99,7 @@ public class ScrapperApiController {
         );
     }
 
+    @Counted(value = "api_counter", description = "Number of request to API")
     @Operation(
         operationId = "linksPost",
         summary = "Добавить отслеживание ссылки",
@@ -124,6 +128,7 @@ public class ScrapperApiController {
         );
     }
 
+    @Counted(value = "api_counter", description = "Number of request to API")
     @Operation(
         summary = "Удалить чат",
         responses = {
@@ -147,7 +152,7 @@ public class ScrapperApiController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-
+    @Counted(value = "api_counter", description = "Number of request to API")
     @Operation(
         summary = "Зарегистрировать чат",
         responses = {

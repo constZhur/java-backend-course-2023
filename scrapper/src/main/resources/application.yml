@@ -3,7 +3,7 @@ app:
     enable: true
     interval: 30s
     force-check-delay: 30s
-  database-access-type: jpa
+  database-access-type: jdbc
   kafka-properties:
     bootstrap-servers: localhost:9092
     kafka-producer:
@@ -36,7 +36,7 @@ api:
     increment: 2
     http-codes: INTERNAL_SERVER_ERROR, SERVICE_UNAVAILABLE, BAD_GATEWAY, GATEWAY_TIMEOUT, INSUFFICIENT_STORAGE
   link-updater:
-    interval: 10
+    interval: 1000
     limit: 100
   rate-limiter:
     requests: 15
@@ -56,13 +56,34 @@ spring:
     show-sql: true
   liquibase:
     enabled: false
-
 server:
   port: 8080
-
 logging:
   config: classpath:log4j2-plain.xml
-
 springdoc:
   swagger-ui:
     path: /swagger-ui
+
+management:
+  server:
+    port: 8880
+  endpoints:
+    web:
+      base-path: /
+      path-mapping:
+        prometheus: /metrics
+      exposure:
+        include: info, health, prometheus
+  endpoint:
+    metrics:
+      enabled: true
+    health:
+      enabled: true
+    info:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+    distribution:
+      percentiles-histogram:
+        "[http.server.requests]": true
