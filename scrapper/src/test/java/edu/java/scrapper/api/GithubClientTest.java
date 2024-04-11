@@ -30,7 +30,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@SpringBootTest
 public class GithubClientTest {
     private static Retry retry;
 
