@@ -2,7 +2,7 @@ package edu.java.bot.commands;
 
 import com.pengrad.telegrambot.model.*;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.client.ScrapperClient;
+import edu.java.bot.client.scrapper.ScrapperClient;
 import edu.java.bot.dto.response.ApiErrorResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

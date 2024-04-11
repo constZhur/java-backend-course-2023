@@ -4,6 +4,14 @@ app:
 api:
   scrapper:
     url: http://localhost:8080
+    retry-policy: linear
+    max-retries: 5
+    retry-delay: 5
+    increment: 2
+    http-codes: INTERNAL_SERVER_ERROR, SERVICE_UNAVAILABLE, BAD_GATEWAY, GATEWAY_TIMEOUT, INSUFFICIENT_STORAGE
+  rate-limiter:
+    requests: 15
+    interval: 30
 
 spring:
   application:

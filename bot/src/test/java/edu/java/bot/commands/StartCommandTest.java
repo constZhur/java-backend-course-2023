@@ -32,7 +32,7 @@ public class StartCommandTest extends AbstractCommandTest {
 
     @Test
     public void testHandleWhenUserNotRegistered() {
-        scrapperClient.registerChat(CHAT_ID);
+        scrapperClient.registerChatRetry(CHAT_ID);
 
         String expectedText = "Добро пожаловать!\nЧтобы увидеть список команд, используйте /help";
         SendMessage msg = startCommand.handle(mockUpdate);
@@ -42,7 +42,7 @@ public class StartCommandTest extends AbstractCommandTest {
 
     @Test
     public void testHandleWhenUserAlreadyRegistered() {
-        doThrow(BotApiBadRequestException.class).when(scrapperClient).registerChat(CHAT_ID);
+        doThrow(BotApiBadRequestException.class).when(scrapperClient).registerChatRetry(CHAT_ID);
 
         String expectedText = "Бот уже запущен и готов к использованию";
         SendMessage msg = startCommand.handle(mockUpdate);

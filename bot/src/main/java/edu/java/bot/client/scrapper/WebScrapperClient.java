@@ -1,4 +1,4 @@
-package edu.java.bot.client;
+package edu.java.bot.client.scrapper;
 
 import edu.java.bot.dto.request.AddLinkRequest;
 import edu.java.bot.dto.request.RemoveLinkRequest;

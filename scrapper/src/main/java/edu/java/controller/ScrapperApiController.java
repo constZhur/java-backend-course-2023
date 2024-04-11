@@ -72,7 +72,7 @@ public class ScrapperApiController {
         }
     )
     @GetMapping("/links")
-    ResponseEntity<ListLinksResponse> getLinks(@NotNull @RequestHeader(value = "Tg-Chat-Id") Long tgChatId) {
+    public ResponseEntity<ListLinksResponse> getLinks(@NotNull @RequestHeader(value = "Tg-Chat-Id") Long tgChatId) {
         List<Link> links =  linkService.getAllUserLinks(tgChatId);
         List<LinkResponse> linksResponses = links.stream().map(
             link -> {

@@ -8,13 +8,31 @@ app:
 api:
   github:
     url: https://api.github.com
+    retry-policy: linear
+    max-retries: 5
+    retry-delay: 5
+    increment: 2
+    http-codes: INTERNAL_SERVER_ERROR, SERVICE_UNAVAILABLE, BAD_GATEWAY, GATEWAY_TIMEOUT, INSUFFICIENT_STORAGE
   stackoverflow:
     url: https://api.stackexchange.com
+    retry-policy: constant
+    max-retries: 5
+    retry-delay: 5
+    increment: 2
+    http-codes: INTERNAL_SERVER_ERROR, SERVICE_UNAVAILABLE, BAD_GATEWAY, GATEWAY_TIMEOUT, INSUFFICIENT_STORAGE
   bot:
     url: http://localhost:8090
+    retry-policy: exponential
+    max-retries: 5
+    retry-delay: 5
+    increment: 2
+    http-codes: INTERNAL_SERVER_ERROR, SERVICE_UNAVAILABLE, BAD_GATEWAY, GATEWAY_TIMEOUT, INSUFFICIENT_STORAGE
   link-updater:
     interval: 1000
     limit: 100
+  rate-limiter:
+    requests: 15
+    interval: 30
 
 
 spring:

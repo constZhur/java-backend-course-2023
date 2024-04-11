@@ -2,7 +2,7 @@ package edu.java.bot.commands;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.client.ScrapperClient;
+import edu.java.bot.client.scrapper.ScrapperClient;
 import edu.java.bot.dto.response.ListLinksResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +37,7 @@ public class ListCommand implements Command {
     @Override
     public SendMessage handle(Update update) {
         Long chatId = update.message().chat().id();
-        ListLinksResponse response = client.getAllLinks(chatId);
+        ListLinksResponse response = client.getAllLinksRetry(chatId);
 
         StringBuilder userLinks = new StringBuilder();
         response.links().forEach(x -> userLinks.append("- ").append(x.uri()).append("\n"));

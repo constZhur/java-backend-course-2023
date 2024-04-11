@@ -2,7 +2,7 @@ package edu.java.bot.commands;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.client.ScrapperClient;
+import edu.java.bot.client.scrapper.ScrapperClient;
 import edu.java.bot.dto.request.AddLinkRequest;
 import edu.java.bot.exception.BotApiBadRequestException;
 import edu.java.bot.parsers.LinkParser;
@@ -58,7 +58,7 @@ public class TrackCommand implements Command {
         for (LinkParser l : links) {
             if (l.parseLink(uri)) {
                 try {
-                    client.addLink(chatId, new AddLinkRequest(uri));
+                    client.addLinkRetry(chatId, new AddLinkRequest(uri));
                     return new SendMessage(chatId, LINK_ADDED_SUCCESSFULLY_MESSAGE);
                 } catch (BotApiBadRequestException e) {
                     return new SendMessage(chatId, LINK_ALREADY_TRACKED_MESSAGE);

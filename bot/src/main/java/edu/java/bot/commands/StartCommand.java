@@ -2,7 +2,7 @@ package edu.java.bot.commands;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.client.ScrapperClient;
+import edu.java.bot.client.scrapper.ScrapperClient;
 import edu.java.bot.exception.BotApiBadRequestException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +35,7 @@ public class StartCommand implements Command {
         Long chatId = update.message().chat().id();
 
         try {
-            client.registerChat(chatId);
+            client.registerChatRetry(chatId);
             log.info("Обработка команды /start для нового пользователя: {}", chatId);
             return new SendMessage(chatId, WELCOME_MESSAGE);
         } catch (BotApiBadRequestException e) {
