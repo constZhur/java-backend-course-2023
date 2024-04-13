@@ -5,14 +5,15 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
-import edu.java.clients.dto.github.GithubRepoOwner;
+import java.util.Arrays;
 import edu.java.clients.dto.github.GithubResponse;
 import edu.java.clients.impl.GithubClient;
-import edu.java.clients.interfaces.WebClientGithub;
+import edu.java.clients.retry.RetryPolicy;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.util.ResourceUtils;
 import org.testcontainers.shaded.org.apache.commons.io.FileUtils;
@@ -29,7 +30,20 @@ public class GithubClientTest {
     void setUp(){
         server = new WireMockServer();
         server.start();
-        client = new GithubClient("http://localhost:" + server.port());
+        client = new GithubClient(
+            "http://localhost:" + server.port(),
+            RetryPolicy.LINEAR,
+            10,
+            15L,
+            2,
+            Arrays.asList(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                HttpStatus.SERVICE_UNAVAILABLE,
+                HttpStatus.BAD_GATEWAY,
+                HttpStatus.GATEWAY_TIMEOUT,
+                HttpStatus.INSUFFICIENT_STORAGE
+            )
+        );
     }
 
     @AfterEach
@@ -63,6 +77,31 @@ public class GithubClientTest {
     }
 
     @Test
+    public void testFetchingExistingRepositoryWithRetry() throws IOException {
+        String repository = "java-backend-course-2023";
+        String username = "constZhur";
+
+        File file = ResourceUtils.getFile("classpath:github-success-response-data.json");
+        String expectedJson = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
+
+        server
+            .stubFor(get("/repos/%s/%s".formatted(username, repository))
+                .willReturn(aResponse()
+                    .withStatus(200)
+                    .withBody(expectedJson)
+                    .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)));
+
+        GithubResponse response = client.fetchGitHubRepositoryRetry("constZhur", repository);
+
+        assertThat(response).isNotNull();
+        assertThat(response.id()).isEqualTo(755879057L);
+        assertThat(response.name()).isEqualTo("java-backend-course-2023");
+        assertThat(response.owner().login()).isEqualTo("constZhur");
+        assertThat(response.updatedAt()).isEqualTo(OffsetDateTime.parse("2024-02-11T11:13:55Z"));
+        assertThat(response.pushedAt()).isEqualTo(OffsetDateTime.parse("2024-02-24T21:43:31Z"));
+    }
+
+    @Test
     public void testFetchingNonExistingRepository() throws IOException {
         String invalidRepository = "defaultRepo";
         String username = "defaultUser";
@@ -79,6 +118,27 @@ public class GithubClientTest {
 
         assertThatThrownBy(() -> client.fetchGitHubRepository(
              "defaultUser", invalidRepository))
+            .isInstanceOf(RuntimeException.class)
+            .hasMessage("GitHub API Exception");
+    }
+
+    @Test
+    public void testFetchingNonExistingRepositoryWithRetry() throws IOException {
+        String invalidRepository = "defaultRepo";
+        String username = "defaultUser";
+
+        File file = ResourceUtils.getFile("classpath:github-fail-response-data.json");
+        String expectedJson = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
+
+        server
+            .stubFor(get("/repos/%s/%s".formatted(username, invalidRepository))
+                .willReturn(aResponse()
+                    .withStatus(404)
+                    .withBody(expectedJson)
+                    .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)));
+
+        assertThatThrownBy(() -> client.fetchGitHubRepositoryRetry(
+            "defaultUser", invalidRepository))
             .isInstanceOf(RuntimeException.class)
             .hasMessage("GitHub API Exception");
     }
