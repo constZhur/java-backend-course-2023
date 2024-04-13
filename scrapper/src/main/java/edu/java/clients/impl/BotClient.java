@@ -91,6 +91,6 @@ public class BotClient implements WebClientBot, UpdateSender {
 
     @SneakyThrows
     @Override
-    public void send(LinkUpdateRequest update) {
+    public HttpStatus send(LinkUpdateRequest update) {
         retry.executeCallable(() -> sendUpdates(update));
 }
