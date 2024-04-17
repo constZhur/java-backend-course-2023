@@ -1,4 +1,4 @@
-package edu.java.scrapper.unit.service.update.handler;
+package edu.java.scrapper.unit.service.update.handler.stackoverflow;
 
 import edu.java.clients.dto.stackoverflow.StackOverflowAccountOwner;
 import edu.java.clients.dto.stackoverflow.StackoverflowItemsResponse;
@@ -6,7 +6,7 @@ import edu.java.clients.dto.stackoverflow.StackoverflowResponse;
 import edu.java.clients.impl.StackoverflowClient;
 import edu.java.dto.Update;
 import edu.java.model.Link;
-import edu.java.service.update.handler.StackoverflowUpdateHandler;
+import edu.java.service.update.handler.stackoverflow.StackoverflowUpdateHandler;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,7 +24,6 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class StackoverflowUpdateHandlerTest {
-
     @Mock
     private StackoverflowClient stackoverflowClient;
 
@@ -39,7 +38,7 @@ public class StackoverflowUpdateHandlerTest {
 
     @Test
     void testFetchUpdate() {
-        String testUrl = "/stackoverflow.com/questions/46125417/how-to-mock-a-service-using-wiremock";
+        String testUrl = "https://stackoverflow.com/questions/46125417/how-to-mock-a-service-using-wiremock";
         Link link = new Link(1, testUrl,
             OffsetDateTime.of(2024, 3, 20, 21, 0, 0, 0, ZoneOffset.UTC));
         long questionId = 46125417L;
@@ -54,12 +53,10 @@ public class StackoverflowUpdateHandlerTest {
 
         when(stackoverflowClient.fetchStackOverflowQuestionRetry(questionId)).thenReturn(itemsResponse);
 
-        Optional<Update> update = stackoverflowUpdateHandler.fetchUpdate(link);
+        List<Optional<Update>> updates = stackoverflowUpdateHandler.fetchUpdates(link);
 
-        assertThat(update).isPresent();
-        assertThat(update.get().linkId()).isEqualTo(link.getId());
-        assertThat(update.get().url()).isEqualTo(testUrl);
-        assertThat(update.get().description()).isEqualTo("Обновления в вопросе");
-        assertThat(update.get().updateTime()).isEqualTo(response.lastActivityDate());
+        assertThat(updates.get(0).get().linkId()).isEqualTo(link.getId());
+        assertThat(updates.get(0).get().url()).isEqualTo(testUrl);
+        assertThat(updates.get(0).get().description()).isEqualTo("Обновления в вопросе");
     }
 }

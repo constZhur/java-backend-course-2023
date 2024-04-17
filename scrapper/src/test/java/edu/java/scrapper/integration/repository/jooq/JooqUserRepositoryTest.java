@@ -1,15 +1,8 @@
 package edu.java.scrapper.integration.repository.jooq;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 import edu.java.model.User;
 import edu.java.repository.jooq.JooqUserRepository;
 import edu.java.scrapper.integration.IntegrationTest;
-import org.jooq.DSLContext;
-import org.jooq.SQLDialect;
-import org.jooq.conf.RenderNameCase;
-import org.jooq.conf.RenderQuotedNames;
-import org.jooq.impl.DSL;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,8 +21,8 @@ public class JooqUserRepositoryTest extends IntegrationTest {
 
     private static JooqUserRepository userRepository;
 
-    private static User user1 = new User(1L, "constZhur", new HashSet<>());
-    private static User user2 = new User(2L, "lwbeamer", new HashSet<>());
+    private static User user1 = new User(1L, new HashSet<>());
+    private static User user2 = new User(2L, new HashSet<>());
 
     @BeforeAll
     static void setUp() {
@@ -48,7 +41,7 @@ public class JooqUserRepositoryTest extends IntegrationTest {
         Optional<User> foundUser = userRepository.findById(user1.getId());
 
         assertThat(foundUser).isPresent();
-        assertThat(foundUser.get().getName()).isEqualTo(user1.getName());
+        assertThat(foundUser.get().getId()).isEqualTo(user1.getId());
     }
 
     @Test
@@ -75,7 +68,7 @@ public class JooqUserRepositoryTest extends IntegrationTest {
         userRepository.add(user2);
         List<User> allUsers = userRepository.findAll();
 
-        assertThat(allUsers.stream().map(User::getName).toList())
-            .containsExactlyInAnyOrderElementsOf(List.of(user1.getName(), user2.getName()));
+        assertThat(allUsers.stream().map(User::getId).toList())
+            .containsExactlyInAnyOrderElementsOf(List.of(user1.getId(), user2.getId()));
     }
 }

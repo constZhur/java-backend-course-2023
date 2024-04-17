@@ -1,17 +1,10 @@
 package edu.java.scrapper.integration.repository.jooq;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 import edu.java.model.Link;
 import edu.java.model.User;
 import edu.java.repository.jooq.JooqLinkRepository;
 import edu.java.repository.jooq.JooqUserRepository;
 import edu.java.scrapper.integration.IntegrationTest;
-import org.jooq.DSLContext;
-import org.jooq.SQLDialect;
-import org.jooq.conf.RenderNameCase;
-import org.jooq.conf.RenderQuotedNames;
-import org.jooq.impl.DSL;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,12 +23,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 @JooqTest
 @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
 public class JooqLinkRepositoryTest extends IntegrationTest {
-    
+
     private static JooqLinkRepository linkRepository;
     private static JooqUserRepository userRepository;
 
-    private static User user1 = new User(1L, "constZhur", new HashSet<>());
-    private static User user2 = new User(2L, "lwbeamer", new HashSet<>());
+    private static User user1 = new User(1L, new HashSet<>());
+    private static User user2 = new User(2L, new HashSet<>());
 
     private static Link link1 = new Link(1,
         "https://github.com/lwbeamer/clound-project",

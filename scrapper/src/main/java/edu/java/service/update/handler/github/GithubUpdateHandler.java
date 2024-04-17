@@ -1,16 +1,15 @@
 package edu.java.service.update.handler.github;
 
-import edu.java.clients.dto.github.GithubResponse;
 import edu.java.clients.impl.GithubClient;
 import edu.java.dto.Update;
 import edu.java.dto.response.EventResponse;
 import edu.java.exception.NoSuchRepositoryException;
 import edu.java.model.Link;
+import edu.java.service.update.handler.UpdateHandler;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import edu.java.service.update.handler.UpdateHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -34,7 +33,7 @@ public class GithubUpdateHandler implements UpdateHandler {
 
     @Override
     public List<Optional<Update>> fetchUpdates(Link link) {
-        String url = link.getUrl().toString();
+        String url = link.getUrl();
         String[] urlParts = url.split("/");
 
         List<Optional<Update>> updates = new ArrayList<>();
@@ -59,7 +58,7 @@ public class GithubUpdateHandler implements UpdateHandler {
     }
 
     private List<EventResponse> fetchNewEvents(String username, String repository, OffsetDateTime lastUpdateTime) {
-        List<EventResponse> events = githubClient.fetchGithubRepositoryEventsRetry(username, repository);
+        List<EventResponse> events = githubClient.fetchGithubRepositoryEvents(username, repository);
         log.info(events.toString());
         log.info(events.stream().filter(e -> e.getCreatedAt().isAfter(lastUpdateTime)).toList().toString());
         return events.stream().filter(e -> e.getCreatedAt().isAfter(lastUpdateTime)).toList();

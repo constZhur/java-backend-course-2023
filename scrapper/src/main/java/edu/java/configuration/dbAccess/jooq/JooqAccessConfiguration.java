@@ -9,10 +9,7 @@ import edu.java.service.UserService;
 import edu.java.service.jooq.JooqLinkService;
 import edu.java.service.jooq.JooqUserService;
 import org.jooq.DSLContext;
-import org.jooq.conf.RenderQuotedNames;
-import org.jooq.impl.DefaultConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.jooq.DefaultConfigurationCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

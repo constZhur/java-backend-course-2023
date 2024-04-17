@@ -4,10 +4,10 @@ import edu.java.clients.dto.stackoverflow.StackoverflowItemsResponse;
 import edu.java.clients.impl.StackoverflowClient;
 import edu.java.dto.Update;
 import edu.java.model.Link;
+import edu.java.service.update.handler.UpdateHandler;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import edu.java.service.update.handler.UpdateHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

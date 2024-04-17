@@ -1,0 +1,42 @@
+[
+    {
+        "id": "37430185816",
+        "type": "PushEvent",
+        "actor": {
+            "id": 113041604,
+            "login": "constZhur",
+            "display_login": "constZhur",
+            "gravatar_id": "",
+            "url": "https://api.github.com/users/constZhur",
+            "avatar_url": "https://avatars.githubusercontent.com/u/113041604?"
+        },
+        "repo": {
+            "id": 755879057,
+            "name": "constZhur/java-backend-course-2023",
+            "url": "https://api.github.com/repos/constZhur/java-backend-course-2023"
+        },
+        "payload": {
+            "repository_id": 755879057,
+            "push_id": 17982080859,
+            "size": 1,
+            "distinct_size": 1,
+            "ref": "refs/heads/hw8",
+            "head": "95df809879ef93648838b1bf57c72950569f56b9",
+            "before": "6c9995cce1503663e08974c9b104260f2199e795",
+            "commits": [
+                {
+                    "sha": "95df809879ef93648838b1bf57c72950569f56b9",
+                    "author": {
+                        "email": "113041604+constZhur@users.noreply.github.com",
+                        "name": "Konstantin Zhuravlev"
+                    },
+                    "message": "resolved merge problem",
+                    "distinct": true,
+                    "url": "https://api.github.com/repos/constZhur/java-backend-course-2023/commits/95df809879ef93648838b1bf57c72950569f56b9"
+                }
+            ]
+        },
+        "public": true,
+        "created_at": "2024-04-13T14:22:10Z"
+    }
+]

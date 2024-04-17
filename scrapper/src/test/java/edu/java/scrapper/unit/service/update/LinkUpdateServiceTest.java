@@ -56,9 +56,8 @@ public class LinkUpdateServiceTest {
         );
 
         when(updateHandler.supports(any())).thenReturn(true);
-        when(updateHandler.fetchUpdate(any())).thenReturn(
-            Optional.of(new Update(1, "https://github.com", "test description", OffsetDateTime.now()))
-        );
+        when(updateHandler.fetchUpdates(any())).thenReturn(List.of(
+            Optional.of(new Update(1, "https://github.com", "test description"))));
 
         when(linkService.getOutdatedLinks(anyLong(), anyLong())).thenReturn(links);
 

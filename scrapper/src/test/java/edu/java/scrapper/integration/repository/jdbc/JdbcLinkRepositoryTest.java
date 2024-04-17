@@ -15,24 +15,22 @@ import edu.java.scrapper.integration.IntegrationTest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Bean;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Transactional
 @SpringBootTest
 @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+@TestPropertySource(properties = {"GITHUB_ACCESS_TOKEN=test_token"})
 public class JdbcLinkRepositoryTest extends IntegrationTest {
     private static JdbcLinkRepository linkRepository;
     private static JdbcUserRepository userRepository;
 
-    private static User user1 = new User(1L, "constZhur", new HashSet<>());
-    private static User user2 = new User(2L, "lwbeamer", new HashSet<>());
+    private static User user1 = new User(1L, new HashSet<>());
+    private static User user2 = new User(2L, new HashSet<>());
 
     private static Link link1 = new Link(1,
         "https://github.com/lwbeamer/clound-project",

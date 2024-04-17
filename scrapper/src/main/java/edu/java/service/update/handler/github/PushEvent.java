@@ -4,8 +4,8 @@ import edu.java.dto.response.EventResponse;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CommitEvent implements Event {
-    private static final String EVENT_TYPE = "CommitEvent";
+public class PushEvent implements Event {
+        private static final String EVENT_TYPE = "PushEvent";
     private static final String MESSAGE = "Пользователь %s отправил изменения в репозиторий %s";
 
     @Override

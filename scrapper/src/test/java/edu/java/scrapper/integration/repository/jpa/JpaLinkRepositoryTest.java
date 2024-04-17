@@ -11,7 +11,6 @@ import edu.java.model.User;
 import edu.java.repository.jpa.JpaLinkRepository;
 import edu.java.repository.jpa.JpaUserRepository;
 import edu.java.scrapper.integration.IntegrationTest;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,7 +35,7 @@ public class JpaLinkRepositoryTest extends IntegrationTest {
 
     @BeforeAll
     public static void SetUp() {
-        user = new User(1L, "constZhur", new HashSet<>());
+        user = new User(1L, new HashSet<>());
 
         link1 = new Link(1,
             "https://github.com/constZhur/java-backend-course-2023",
