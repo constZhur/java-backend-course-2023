@@ -41,7 +41,7 @@ class JpaLinkServiceTest {
 
     @BeforeEach
     void setUp() {
-        user = new User(1L, "constZhur", new HashSet<>());
+        user = new User(1L, new HashSet<>());
 
         link = new Link(1,
             "https://github.com/constZhur/java-backend-course-2023",

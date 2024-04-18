@@ -31,8 +31,8 @@ public class JdbcLinkRepositoryTest extends IntegrationTest {
     private static JdbcLinkRepository linkRepository;
     private static JdbcUserRepository userRepository;
 
-    private static User user1 = new User(1L, "constZhur", new HashSet<>());
-    private static User user2 = new User(2L, "lwbeamer", new HashSet<>());
+    private static User user1 = new User(1L, new HashSet<>());
+    private static User user2 = new User(2L, new HashSet<>());
 
     private static Link link1 = new Link(1,
         "https://github.com/lwbeamer/clound-project",

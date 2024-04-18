@@ -34,7 +34,7 @@ public class JdbcUserServiceTest {
     @Test
     void registerUserChat_WhenUserDoesNotExist_ShouldAddUser() {
         // Given
-        User newUser = new User(1L, "username", new HashSet<>());
+        User newUser = new User(1L, new HashSet<>());
         when(userRepository.findById(newUser.getId())).thenReturn(Optional.empty());
 
         // When
@@ -47,7 +47,7 @@ public class JdbcUserServiceTest {
     @Test
     void registerUserChat_WhenUserExists_ShouldThrowException() {
         // Given
-        User existingUser = new User(1L, "existingUser", new HashSet<>());
+        User existingUser = new User(1L, new HashSet<>());
         when(userRepository.findById(existingUser.getId())).thenReturn(Optional.of(existingUser));
 
         // When, Then
@@ -58,7 +58,7 @@ public class JdbcUserServiceTest {
     void unregisterUserChat_WhenUserExists_ShouldRemoveUser() {
         // Given
         Long userIdToRemove = 1L;
-        when(userRepository.findById(userIdToRemove)).thenReturn(Optional.of(new User(userIdToRemove, "user", new HashSet<>())));
+        when(userRepository.findById(userIdToRemove)).thenReturn(Optional.of(new User(userIdToRemove, new HashSet<>())));
 
         // When
         userService.unregisterUserChat(userIdToRemove);
@@ -81,7 +81,7 @@ public class JdbcUserServiceTest {
     void checkThatUserChatExists_WhenUserExists_ShouldNotThrowException() {
         // Given
         Long existingUserId = 1L;
-        when(userRepository.findById(existingUserId)).thenReturn(Optional.of(new User(existingUserId, "user", new HashSet<>())));
+        when(userRepository.findById(existingUserId)).thenReturn(Optional.of(new User(existingUserId, new HashSet<>())));
 
         // When, Then
         assertDoesNotThrow(() -> userService.checkThatUserChatExists(existingUserId));

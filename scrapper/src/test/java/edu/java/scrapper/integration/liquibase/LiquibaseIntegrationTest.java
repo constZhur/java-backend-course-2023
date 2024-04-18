@@ -21,10 +21,6 @@ public class LiquibaseIntegrationTest extends IntegrationTest {
     private final Long chatId2 = 2L;
     private final Long chatId3 = 3L;
 
-    private final String username1 = "constZhur";
-    private final String username2 = "lwbeamer";
-    private final String username3 = "sanyarnd";
-
     private final String link1 = "https://github.com/lwbeamer/clound-project";
     private final String link2 = "https://stackoverflow.com/questions/46125417/how-to-mock-a-service-using-wiremock";
     private final String link3 = "https://github.com/constZhur/java-backend-course-2023";
@@ -39,13 +35,13 @@ public class LiquibaseIntegrationTest extends IntegrationTest {
 
     @Test
     void testScrapperDBUserChatTable() {
-        insertUserChat(chatId1, username1);
-        insertUserChat(chatId2, username2);
+        insertUserChat(chatId1);
+        insertUserChat(chatId2);
 
-        List<String> actualUsernames = selectUsernamesFromChatTable();
+        List<Long> actualIds = selectIdsFromChatTable();
 
-        assertThat(actualUsernames.size()).isEqualTo(2);
-        assertThat(actualUsernames).containsExactlyInAnyOrder(username1, username2);
+        assertThat(actualIds.size()).isEqualTo(2);
+        assertThat(actualIds).containsExactlyInAnyOrder(chatId1, chatId2);
     }
 
     @Test
@@ -61,7 +57,7 @@ public class LiquibaseIntegrationTest extends IntegrationTest {
 
     @Test
     void testScrapperDBLinkChatRelations() {
-        insertUserChat(chatId3, username3);
+        insertUserChat(chatId3);
         insertLink(chatId3, link3);
         insertChatLink(chatId3, 3);
 
@@ -69,9 +65,9 @@ public class LiquibaseIntegrationTest extends IntegrationTest {
         assertThat(link3Count).isEqualTo(1);
     }
 
-    private void insertUserChat(long chatId, String name) {
-        String insertSql = "INSERT INTO user_chat (id, name) VALUES (?, ?)";
-        jdbcTemplate.update(insertSql, chatId, name);
+    private void insertUserChat(long chatId) {
+        String insertSql = "INSERT INTO user_chat (id) VALUES (?)";
+        jdbcTemplate.update(insertSql, chatId);
     }
 
     private void insertLink(Long id, String url) {
@@ -84,9 +80,9 @@ public class LiquibaseIntegrationTest extends IntegrationTest {
         jdbcTemplate.update(insertSql, chatId, linkId);
     }
 
-    private List<String> selectUsernamesFromChatTable() {
-        String selectSql = "SELECT name FROM user_chat";
-        return jdbcTemplate.query(selectSql, (rs, rowNum) -> rs.getString("name"));
+    private List<Long> selectIdsFromChatTable() {
+        String selectSql = "SELECT id FROM user_chat";
+        return jdbcTemplate.query(selectSql, (rs, rowNum) -> rs.getLong("id"));
     }
 
     private List<String> selectUrlsFromLinkTable() {

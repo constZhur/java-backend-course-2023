@@ -3,6 +3,7 @@ package edu.java.bot.messageHandler;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.commands.Command;
+import io.micrometer.core.annotation.Counted;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +33,7 @@ public class UserMessageProcessorImpl implements UserMessageProcessor {
     }
 
     @Override
+    @Counted(value = "bot_requests_counter", description = "Number of request to Telegram bot")
     public SendMessage process(Update update) {
         Long chatId = update.message().chat().id();
 

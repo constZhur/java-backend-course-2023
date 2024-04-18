@@ -20,8 +20,8 @@ import static org.assertj.core.api.Assertions.*;
 public class JdbcUserRepositoryTest extends IntegrationTest {
     private static JdbcUserRepository userRepository;
 
-    private static User user1 = new User(1L, "constZhur", new HashSet<>());
-    private static User user2 = new User(2L, "lwbeamer", new HashSet<>());
+    private static User user1 = new User(1L, new HashSet<>());
+    private static User user2 = new User(2L, new HashSet<>());
 
     @BeforeAll
     static void setUp(){
@@ -40,7 +40,7 @@ public class JdbcUserRepositoryTest extends IntegrationTest {
         Optional<User> foundUser = userRepository.findById(user1.getId());
 
         assertThat(foundUser).isPresent();
-        assertThat(foundUser.get().getName()).isEqualTo(user1.getName());
+        assertThat(foundUser.get().getId()).isEqualTo(user1.getId());
     }
 
     @Test
@@ -67,8 +67,8 @@ public class JdbcUserRepositoryTest extends IntegrationTest {
         userRepository.add(user2);
         List<User> allUsers = userRepository.findAll();
 
-        assertThat(allUsers.stream().map(User::getName).toList())
-            .containsExactlyInAnyOrderElementsOf(List.of(user1.getName(), user2.getName()));
+        assertThat(allUsers.stream().map(User::getId).toList())
+            .containsExactlyInAnyOrderElementsOf(List.of(user1.getId(), user2.getId()));
     }
 }
 

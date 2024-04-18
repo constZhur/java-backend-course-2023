@@ -15,8 +15,7 @@ public class JdbcUserRepository implements UserRepository {
 
     @Override
     public void add(User userChat) {
-        jdbcTemplate.update("INSERT INTO user_chat (id, name) VALUES (?, ?)", userChat.getId(),
-            userChat.getName());
+        jdbcTemplate.update("INSERT INTO user_chat (id) VALUES (?)", userChat.getId());
     }
 
     @Override

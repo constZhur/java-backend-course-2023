@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 public class StackoverflowUpdateHandler implements UpdateHandler {
     private static final String HOSTNAME = "stackoverflow.com";
 
-    private final int questionIndex = 3;
+    private final int questionIndex = 4;
 
     private final StackoverflowClient stackoverflowClient;
 
