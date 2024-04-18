@@ -4,6 +4,14 @@ app:
     interval: 30s
     force-check-delay: 30s
   database-access-type: jdbc
+  kafka-properties:
+    bootstrap-servers: localhost:9092
+    kafka-producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    topic-name: bot-updates
+  use-queue: true
+
 
 api:
   github:
@@ -50,13 +58,34 @@ spring:
     show-sql: true
   liquibase:
     enabled: false
-
 server:
   port: 8080
-
 logging:
   config: classpath:log4j2-plain.xml
-
 springdoc:
   swagger-ui:
     path: /swagger-ui
+
+management:
+  server:
+    port: 8880
+  endpoints:
+    web:
+      base-path: /
+      path-mapping:
+        prometheus: /metrics
+      exposure:
+        include: info, health, prometheus
+  endpoint:
+    metrics:
+      enabled: true
+    health:
+      enabled: true
+    info:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+    distribution:
+      percentiles-histogram:
+        "[http.server.requests]": true

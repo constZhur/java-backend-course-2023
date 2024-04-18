@@ -11,7 +11,6 @@ import io.github.resilience4j.retry.Retry;
 import jakarta.annotation.PostConstruct;
 import java.util.List;
 import lombok.SneakyThrows;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -25,40 +24,18 @@ public class GithubClient implements WebClientGithub {
 
     private Retry retry;
 
-    @Value("${api.github.retry-policy}")
-    private RetryPolicy retryPolicy;
-    @Value("${api.github.max-retries}")
-    private Integer maxRetries;
-    @Value("${api.github.retry-delay}")
-    private Long retryDelay;
-    @Value("${api.github.increment}")
-    private Integer increment;
-    @Value("${api.github.http-codes}")
-    private List<HttpStatus> httpCodes;
-
     public GithubClient() {
         this.webClient = WebClient.builder().baseUrl(this.githubBaseUrl).build();
     }
 
-    public GithubClient(String apiUrl, String accessToken, Integer eventsCount) {
+    public GithubClient(Retry retry, String apiUrl, String accessToken, Integer eventsCount) {
+        this.retry = retry;
         if (!(apiUrl == null) && !apiUrl.isEmpty()) {
             this.githubBaseUrl = apiUrl;
         }
         this.webClient = WebClient.builder().baseUrl(this.githubBaseUrl).build();
         this.accessToken = accessToken;
         this.eventsCount = eventsCount;
-    }
-
-    @PostConstruct
-    private void startRetry() {
-        RetryConfigProxy proxy = RetryConfigProxy.builder()
-            .policy(retryPolicy)
-            .maxRetries(maxRetries)
-            .retryDelay(retryDelay)
-            .increment(increment)
-            .httpStatuses(httpCodes)
-            .build();
-        retry = RetryConfiguration.start(proxy);
     }
 
     @Override

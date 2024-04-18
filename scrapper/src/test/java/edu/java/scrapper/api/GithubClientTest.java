@@ -4,14 +4,21 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
 import edu.java.clients.impl.GithubClient;
+import edu.java.clients.retry.RetryConfigProxy;
+import edu.java.clients.retry.RetryPolicy;
+import edu.java.configuration.retry.RetryConfiguration;
 import edu.java.dto.response.EventResponse;
 import edu.java.exception.NoSuchRepositoryException;
+import io.github.resilience4j.retry.Retry;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.util.ResourceUtils;
 import org.testcontainers.shaded.org.apache.commons.io.FileUtils;
@@ -21,14 +28,36 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class GithubClientTest {
+    private static Retry retry;
+
     private GithubClient client;
     private WireMockServer server;
 
-    @BeforeEach
+    @BeforeAll
+    static void beforeAll() {
+        retry = RetryConfiguration.start(RetryConfigProxy
+            .builder()
+            .policy(RetryPolicy.LINEAR)
+            .maxRetries(10)
+            .retryDelay(15L)
+            .increment(2)
+            .httpStatuses(
+                Arrays.asList(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    HttpStatus.SERVICE_UNAVAILABLE,
+                    HttpStatus.BAD_GATEWAY,
+                    HttpStatus.GATEWAY_TIMEOUT,
+                    HttpStatus.INSUFFICIENT_STORAGE
+                )
+            )
+            .build());
+    }
+
+        @BeforeEach
     void setUp(){
         server = new WireMockServer();
         server.start();
-        client = new GithubClient("http://localhost:" + server.port(), "token", 10);
+        client = new GithubClient(retry, "http://localhost:" + server.port(), "token", 10);
     }
 
     @AfterEach
