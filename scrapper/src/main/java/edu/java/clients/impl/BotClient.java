@@ -46,6 +46,23 @@ public class BotClient implements WebClientBot {
         this.webClient = WebClient.builder().baseUrl(this.url).build();
     }
 
+    public BotClient(
+        @URL String url,
+        RetryPolicy retryPolicy,
+        Integer maxRetries,
+        Long retryDelay,
+        Integer increment,
+        List<HttpStatus> httpCodes) {
+        this.url = url;
+        this.webClient = WebClient.builder().baseUrl(this.url).build();
+        this.retryPolicy = retryPolicy;
+        this.maxRetries = maxRetries;
+        this.retryDelay = retryDelay;
+        this.increment = increment;
+        this.httpCodes = httpCodes;
+        startRetry();
+    }
+
     @PostConstruct
     private void startRetry() {
         RetryConfigProxy proxy = RetryConfigProxy.builder()
@@ -72,7 +89,7 @@ public class BotClient implements WebClientBot {
     }
 
     @SneakyThrows
-    public void sendUpdatesRetry(LinkUpdateRequest linkUpdate) {
-        retry.executeCallable(() -> sendUpdates(linkUpdate));
+    public HttpStatus sendUpdatesRetry(LinkUpdateRequest linkUpdate) {
+        return retry.executeCallable(() -> sendUpdates(linkUpdate));
     }
 }
