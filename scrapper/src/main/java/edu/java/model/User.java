@@ -1,6 +1,5 @@
 package edu.java.model;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -8,13 +7,11 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import java.util.Set;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
 @Entity
@@ -22,9 +19,6 @@ import lombok.Setter;
 public class User {
     @Id
     private Long id;
-
-    @Column(name = "name")
-    private String name;
 
     @ManyToMany
     @JoinTable(

@@ -6,15 +6,20 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+
+import edu.java.bot.client.retry.RetryConfigProxy;
 import edu.java.bot.client.retry.RetryPolicy;
 import edu.java.bot.client.scrapper.ScrapperClient;
+import edu.java.bot.configuration.RetryConfiguration;
 import edu.java.bot.dto.request.AddLinkRequest;
 import edu.java.bot.dto.request.RemoveLinkRequest;
 import edu.java.bot.dto.response.LinkResponse;
 import edu.java.bot.dto.response.ListLinksResponse;
 import edu.java.bot.exception.BotApiBadRequestException;
 import edu.java.bot.exception.BotApiNotFoundException;
+import io.github.resilience4j.retry.Retry;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -30,6 +35,9 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class ScrapperClientTest {
+
+    private static Retry retry;
+
     private WireMockServer wireMockServer;
     private ScrapperClient scrapperClient;
 
@@ -41,26 +49,31 @@ public class ScrapperClientTest {
     private final Long testLinkId = 200L;
     private final String testUrl = "http://example.com";
 
+    @BeforeAll
+    static void beforeAll() {
+        retry = RetryConfiguration.start(RetryConfigProxy
+            .builder()
+            .policy(RetryPolicy.LINEAR)
+            .maxRetries(10)
+            .retryDelay(15L)
+            .increment(2)
+            .httpStatuses(
+                Arrays.asList(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    HttpStatus.SERVICE_UNAVAILABLE,
+                    HttpStatus.BAD_GATEWAY,
+                    HttpStatus.GATEWAY_TIMEOUT,
+                    HttpStatus.INSUFFICIENT_STORAGE
+                )
+            )
+            .build());
+    }
+
     @BeforeEach
     public void setUp() {
         wireMockServer = new WireMockServer(8888);
         wireMockServer.start();
-
-        scrapperClient = new ScrapperClient(
-            "http://localhost:" + wireMockServer.port(),
-            RetryPolicy.LINEAR,
-            10,
-            15L,
-            2,
-            Arrays.asList(
-                HttpStatus.INTERNAL_SERVER_ERROR,
-                HttpStatus.SERVICE_UNAVAILABLE,
-                HttpStatus.BAD_GATEWAY,
-                HttpStatus.GATEWAY_TIMEOUT,
-                HttpStatus.INSUFFICIENT_STORAGE
-            )
-        );
-
+        scrapperClient = new ScrapperClient(retry, "http://localhost:" + wireMockServer.port());
     }
 
     @AfterEach
@@ -225,7 +238,7 @@ public class ScrapperClientTest {
                 .withHeader("Content-Type", "application/json")
                 .withBody(String.format("{\"links\": [{\"id\": %d, \"url\": \"%s\"}], \"size\": 1}", testLinkId, testUrl))));
 
-        ListLinksResponse response = scrapperClient.getAllLinks(testChatId);
+        ListLinksResponse response = scrapperClient.getAllLinksRetry(testChatId);
 
         assertThat(response).isNotNull();
         assertThat(response.links()).hasSize(1);

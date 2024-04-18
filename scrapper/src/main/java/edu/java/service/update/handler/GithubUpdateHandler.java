@@ -13,8 +13,8 @@ import org.springframework.stereotype.Service;
 public class GithubUpdateHandler implements UpdateHandler {
     private static final String HOSTNAME = "github.com";
 
-    private final int usernameIndex = 2;
-    private final int repositoryIndex = 3;
+    private final int usernameIndex = 3;
+    private final int repositoryIndex = 4;
 
     private final GithubClient githubClient;
 

@@ -1,6 +1,6 @@
 package edu.java.schedule;
 
-import edu.java.clients.impl.BotClient;
+import edu.java.clients.interfaces.UpdateSender;
 import edu.java.dto.request.LinkUpdateRequest;
 import edu.java.service.update.LinkUpdateService;
 import java.util.List;
@@ -22,7 +22,7 @@ public class LinkUpdaterScheduler {
     @Value("${api.link-updater.limit}")
     private Long linksLimit;
 
-    private final BotClient botClient;
+    private final UpdateSender sender;
     private final LinkUpdateService updateService;
 
     @Scheduled(fixedDelayString = "#{@scheduler.interval().toMillis()}")
@@ -31,7 +31,7 @@ public class LinkUpdaterScheduler {
 
         List<LinkUpdateRequest> updateRequests = updateService.fetchAllUpdates(linksLimit, interval);
         for (var updateRequest : updateRequests) {
-            botClient.sendUpdatesRetry(updateRequest);
+            sender.send(updateRequest);
         }
 
         log.info("Обновление ссылок завершено");

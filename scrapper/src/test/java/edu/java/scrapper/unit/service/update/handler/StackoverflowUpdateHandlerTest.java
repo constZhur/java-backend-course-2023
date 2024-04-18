@@ -39,7 +39,7 @@ public class StackoverflowUpdateHandlerTest {
 
     @Test
     void testFetchUpdate() {
-        String testUrl = "/stackoverflow.com/questions/46125417/how-to-mock-a-service-using-wiremock";
+        String testUrl = "https://stackoverflow.com/questions/46125417/how-to-mock-a-service-using-wiremock";
         Link link = new Link(1, testUrl,
             OffsetDateTime.of(2024, 3, 20, 21, 0, 0, 0, ZoneOffset.UTC));
         long questionId = 46125417L;

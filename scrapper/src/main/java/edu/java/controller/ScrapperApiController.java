@@ -17,6 +17,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.OffsetDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -48,6 +49,9 @@ public class ScrapperApiController {
             }),
             @ApiResponse(responseCode = "404", description = "Ссылка не найдена", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
+            }),
+            @ApiResponse(responseCode = "429", description = "Превышен лимит запросов", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
             })
         }
     )
@@ -67,6 +71,9 @@ public class ScrapperApiController {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ListLinksResponse.class))
             }),
             @ApiResponse(responseCode = "400", description = "Некорректные параметры запроса", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
+            }),
+            @ApiResponse(responseCode = "429", description = "Превышен лимит запросов", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
             })
         }
@@ -98,6 +105,9 @@ public class ScrapperApiController {
             }),
             @ApiResponse(responseCode = "400", description = "Некорректные параметры запроса", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
+            }),
+            @ApiResponse(responseCode = "429", description = "Превышен лимит запросов", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
             })
         }
     )
@@ -106,7 +116,7 @@ public class ScrapperApiController {
         @NotNull @RequestHeader(value = "Tg-Chat-Id") Long tgChatId,
         @Valid @RequestBody AddLinkRequest addLinkRequest
     ) throws URISyntaxException {
-        userService.addLinkForUser(tgChatId, new Link(addLinkRequest.link()));
+        userService.addLinkForUser(tgChatId, new Link(addLinkRequest.link(), OffsetDateTime.now()));
         Link newLink = linkService.getLinkByUrl(addLinkRequest.link()).get();
         return new ResponseEntity<>(
             new LinkResponse(newLink.getId(), new URI(newLink.getUrl())),
@@ -123,6 +133,9 @@ public class ScrapperApiController {
             }),
             @ApiResponse(responseCode = "404", description = "Чат не существует", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
+            }),
+            @ApiResponse(responseCode = "429", description = "Превышен лимит запросов", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
             })
         }
     )
@@ -134,12 +147,14 @@ public class ScrapperApiController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-
     @Operation(
         summary = "Зарегистрировать чат",
         responses = {
             @ApiResponse(responseCode = "200", description = "Чат зарегистрирован"),
             @ApiResponse(responseCode = "400", description = "Некорректные параметры запроса", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
+            }),
+            @ApiResponse(responseCode = "429", description = "Превышен лимит запросов", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
             })
         }

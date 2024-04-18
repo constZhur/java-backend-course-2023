@@ -36,7 +36,7 @@ public class JpaLinkRepositoryTest extends IntegrationTest {
 
     @BeforeAll
     public static void SetUp() {
-        user = new User(1L, "constZhur", new HashSet<>());
+        user = new User(1L, new HashSet<>());
 
         link1 = new Link(1,
             "https://github.com/constZhur/java-backend-course-2023",

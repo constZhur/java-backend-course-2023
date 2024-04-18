@@ -3,6 +3,7 @@ package edu.java.bot.service;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.bot.MyTelegramBot;
 import edu.java.bot.dto.request.LinkUpdateRequest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
