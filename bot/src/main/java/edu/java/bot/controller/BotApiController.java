@@ -3,7 +3,6 @@ package edu.java.bot.controller;
 import edu.java.bot.dto.request.LinkUpdateRequest;
 import edu.java.bot.dto.response.ApiErrorResponse;
 import edu.java.bot.service.UpdateService;
-import io.micrometer.core.annotation.Counted;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class BotApiController {
     private final UpdateService updateService;
 
-    @Counted(value = "api_counter", description = "Number of request to API")
     @Operation(
         operationId = "updatesPost",
         summary = "Отправить обновление",
