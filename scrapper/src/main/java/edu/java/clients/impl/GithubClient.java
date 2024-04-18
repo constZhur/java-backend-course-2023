@@ -1,14 +1,10 @@
 package edu.java.clients.impl;
 
 import edu.java.clients.interfaces.WebClientGithub;
-import edu.java.clients.retry.RetryConfigProxy;
-import edu.java.clients.retry.RetryPolicy;
-import edu.java.configuration.retry.RetryConfiguration;
 import edu.java.dto.response.ErrorResponse;
 import edu.java.dto.response.EventResponse;
 import edu.java.exception.NoSuchRepositoryException;
 import io.github.resilience4j.retry.Retry;
-import jakarta.annotation.PostConstruct;
 import java.util.List;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpHeaders;
