@@ -33,6 +33,17 @@ jobs:
       - name: maven build
         run: mvn -pl scrapper -am package
 
+      - id: jacoco
+        uses: madrapps/jacoco-report@v1.6.1
+        if: ( github.event_name != 'workflow_dispatch' )
+        with:
+          paths: ${{ github.workspace }}/scrapper/target/site/jacoco/jacoco.xml
+          token: ${{ secrets.GITHUB_TOKEN }}
+          min-coverage-overall: 30
+          min-coverage-changed-files: 30
+          title: Code Coverage
+          update-comment: true
+
       - name: Log in to the Container registry
         uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
         with:
