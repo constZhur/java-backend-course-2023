@@ -16,6 +16,8 @@ app:
 api:
   github:
     url: https://api.github.com
+    access-token: ${GITHUB_ACCESS_TOKEN}
+    events-count: 10
     retry-policy: linear
     max-retries: 5
     retry-delay: 5

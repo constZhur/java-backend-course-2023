@@ -11,7 +11,6 @@ import edu.java.model.User;
 import edu.java.repository.jpa.JpaLinkRepository;
 import edu.java.repository.jpa.JpaUserRepository;
 import edu.java.scrapper.integration.IntegrationTest;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

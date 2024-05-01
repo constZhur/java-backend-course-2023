@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.HashSet;
 import java.util.List;
@@ -17,6 +18,7 @@ import static org.assertj.core.api.Assertions.*;
 @Transactional
 @SpringBootTest
 @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+@TestPropertySource(properties = {"GITHUB_ACCESS_TOKEN=test_token"})
 public class JdbcUserRepositoryTest extends IntegrationTest {
     private static JdbcUserRepository userRepository;
 
@@ -24,7 +26,7 @@ public class JdbcUserRepositoryTest extends IntegrationTest {
     private static User user2 = new User(2L, new HashSet<>());
 
     @BeforeAll
-    static void setUp(){
+    static void setUp() {
         userRepository = new JdbcUserRepository(jdbcTemplate);
     }
 
@@ -62,7 +64,7 @@ public class JdbcUserRepositoryTest extends IntegrationTest {
     }
 
     @Test
-    void findAllUsersTest() {;
+    void findAllUsersTest() {
         userRepository.add(user1);
         userRepository.add(user2);
         List<User> allUsers = userRepository.findAll();

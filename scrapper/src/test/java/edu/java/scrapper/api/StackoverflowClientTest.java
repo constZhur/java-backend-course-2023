@@ -11,7 +11,7 @@ import java.util.Arrays;
 import edu.java.clients.interfaces.WebClientStackoverflow;
 import edu.java.clients.retry.RetryConfigProxy;
 import edu.java.clients.retry.RetryPolicy;
-import edu.java.configuration.RetryConfiguration;
+import edu.java.configuration.retry.RetryConfiguration;
 import io.github.resilience4j.retry.Retry;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.AfterEach;

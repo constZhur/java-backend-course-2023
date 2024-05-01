@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;;
@@ -13,6 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;;
 @SpringBootTest
 @Transactional
 @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+@TestPropertySource(properties = {"GITHUB_ACCESS_TOKEN=test_token"})
 public class LiquibaseIntegrationTest extends IntegrationTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;

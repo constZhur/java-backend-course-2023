@@ -30,11 +30,11 @@ public class LinkUpdateService {
                 .filter(handler -> handler.supports(URI.create(link.getUrl())))
                 .findAny()
                 .orElseThrow(LinkNotSupportedException::new)
-                .fetchUpdate(link)
-                .ifPresent(upd -> {
+                .fetchUpdates(link)
+                .forEach(update -> update.ifPresent(upd -> {
                     updates.add(upd);
                     linkService.updateLinkCheckedTime(link, OffsetDateTime.now());
-                });
+                }));
         }
         return updatesToLinkUpdateRequests(updates);
     }

@@ -1,10 +1,11 @@
-package edu.java.configuration;
+package edu.java.configuration.webClient;
 
 import edu.java.clients.impl.BotClient;
 import edu.java.clients.impl.GithubClient;
 import edu.java.clients.impl.StackoverflowClient;
 import edu.java.clients.retry.RetryConfigProxy;
 import edu.java.clients.retry.RetryPolicy;
+import edu.java.configuration.retry.RetryConfiguration;
 import io.github.resilience4j.retry.Retry;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
@@ -70,11 +71,17 @@ public class ClientConfiguration {
     @Value("${api.bot.http-codes}")
     private List<HttpStatus> botHttpCodes;
 
+    @Value("${api.github.access-token}")
+    private String githubAccessToken;
+
+    @Value("${api.github.events-count}")
+    private Integer eventsCount;
+
     @Bean
     public GithubClient githubClient() {
         Retry githubRetry = createRetry(githubRetryPolicy, githubMaxRetries,
             githubRetryDelay, githubIncrement, githubHttpCodes);
-        return new GithubClient(githubRetry, githubApiUrl);
+        return new GithubClient(githubRetry, githubApiUrl, githubAccessToken, eventsCount);
     }
 
     @Bean

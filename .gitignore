@@ -33,3 +33,4 @@ build/
 
 ### Private Environment Variables ###
 bot/src/main/resources/.env
+scrapper/src/main/resources/.env

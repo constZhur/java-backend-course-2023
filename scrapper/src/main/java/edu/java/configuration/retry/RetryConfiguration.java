@@ -1,4 +1,4 @@
-package edu.java.configuration;
+package edu.java.configuration.retry;
 
 import edu.java.clients.retry.RetryConfigProxy;
 import io.github.resilience4j.core.IntervalFunction;

@@ -5,7 +5,7 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import edu.java.clients.impl.BotClient;
 import edu.java.clients.retry.RetryConfigProxy;
 import edu.java.clients.retry.RetryPolicy;
-import edu.java.configuration.RetryConfiguration;
+import edu.java.configuration.retry.RetryConfiguration;
 import edu.java.dto.request.LinkUpdateRequest;
 import io.github.resilience4j.retry.Retry;
 import lombok.RequiredArgsConstructor;
